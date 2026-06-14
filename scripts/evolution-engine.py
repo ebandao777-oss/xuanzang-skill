@@ -297,7 +297,10 @@ if __name__ == "__main__":
 
     cmd = sys.argv[1]
     try:
-        if cmd == "init":
+        if cmd == "status":
+            # 别名：status → load（向后兼容 SKILL.md Teardown §自治 中引用的旧命令名）
+            print(json.dumps(cmd_load(), ensure_ascii=False))
+        elif cmd == "init":
             print(json.dumps(cmd_init(), ensure_ascii=False))
         elif cmd == "load":
             print(json.dumps(cmd_load(), ensure_ascii=False))
