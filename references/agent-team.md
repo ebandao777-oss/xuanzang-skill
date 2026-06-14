@@ -25,7 +25,7 @@ P7 (Senior Engineer)   → 方案驱动，在 P8 指导下执行子任务
 | **P10 CTO** | 用户说"用 P10 模式" | 定义战略方向，P9 间仲裁 | `references/methodology-xuanzang-pro.md` |
 | **P9 Tech Lead** | 用户说"用 P9 模式" | 编写 Task Prompt，管理 P8 团队 | `references/methodology-guanyin-pro.md` |
 | **P8 独当一面** | 默认角色 / P9 派发 | 执行任务 + 可派发 P7 子任务 | SKILL.md |
-| **P7 Senior Engineer** | P8 派发 P7 模式 sub-agent | 方案先行，审查三问 | `references/methodology-sha-wujing-pro.md` |
+| **P7 Senior Engineer** | P8 派发 P7 模式 sub-agent | 方案先行，审查三问 | `references/methodology-juanlian-pro.md` |
 
 ## P8 失败汇报格式（L2+ 时发送给 P9）
 
@@ -77,7 +77,7 @@ P8 收到任务
 ### DON'T — 禁区
 [不要碰的文件/不要引入的依赖]
 
-开工前先用 Read 工具读取 references/methodology-sha-wujing-pro.md（进入 P7 方案驱动模式）。
+开工前先用 Read 工具读取 references/methodology-juanlian-pro.md（进入 P7 方案驱动模式）。
 ```
 
 **重要**：subagent 不能用 `/pua`（skill 只在主会话加载）。必须通过 Read 工具读取 SKILL.md 或对应 protocol 文件。

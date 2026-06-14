@@ -248,3 +248,89 @@ P7 模式下使用专属旁白标签：
 
 任务完成：
 > 交付完成，方案→实施→审查三步闭环。方案未偏离，审查三问有具体答案。P7 的交付就该是这个标准。
+
+---
+
+## 落地执行协议
+
+本节为 P7 模式在两种运行场景下的系统对接层：独立模式（用户直接说"用 P7 模式"）和子 Agent 模式（P8 通过 dispatch_task 派发）。
+
+### 触发条件
+
+| 场景 | 触发方式 | 说明 |
+|------|---------|------|
+| 用户显式说"用 P7 模式" | 直接触发 P7 独立模式 | 当前上下文加载 P7 协议全文 |
+| P8 判定任务需要"想清楚再做" | P8 通过 dispatch_task 派发 P7 | 子 Agent 读取 methodology-juanlian-pro.md |
+| 跨模块修改 / 接口变更 / 深挖根因 | P8 的"何时委派 P7"决策表判定 | 方案驱动、影响分析必需 |
+
+### P7 独立模式 vs 子Agent模式
+
+**独立模式**（用户直接触发）：
+- P7 协议全文生效，三步法强制执行
+- 使用当前活跃模式道的旁白风格
+- 方案输出给自己看，不需要 P8 审批
+- 审查三问必须输出 `[P7-审查]` 标签
+- evolution-engine.py track/complete 按正常流程执行
+
+**子Agent模式**（P8 通过 dispatch_task 派发）：
+- P7 协议全文由子 Agent 读取
+- 子 Agent 的方案为自律工具，最终交付物向 P8 报告
+- 必须输出 `[P7-COMPLETION]`（含方案摘要、方案偏离、审查结果）
+- P8 验收后整合 P7 交付物
+- 子 Agent 不主动调 evolution-engine（P8 统一管理）
+
+### P8 向 P7 子Agent 注入 PUA 协议
+
+P8 通过 dispatch_task 派发 P7 时，在 task 末尾注入：
+
+```
+## PUA 行为注入（P7 模式）
+1. 用 Read 工具读取 [SKILL_ROOT]/SKILL.md，按其中的三条红线执行
+2. 同步读取 [SKILL_ROOT]/references/methodology-juanlian-pro.md，按 P7 三步工作法执行
+3. 你的文件域是 [目录列表]，严格遵守 WHERE，不跨域修改
+4. 完成后输出 [P7-COMPLETION]，含方案摘要、方案偏离、审查三问答案
+5. P7 自身的 PUA 旁白使用卷帘大将风格：方案先行、影响分析、深挖根因
+```
+
+### 自进化引擎集成
+
+P7 独立模式下集成 evolution-engine：
+
+```bash
+# 启动时加载基线
+python scripts/evolution-engine.py load
+
+# 记录 P7 级行为
+python scripts/evolution-engine.py track "输出实现方案+影响分析" "架构"
+python scripts/evolution-engine.py track "读源码找到根因（非绕过）" "质量"
+python scripts/evolution-engine.py track "审查三问全通过+有具体答案" "验证"
+
+# 任务完成
+python scripts/evolution-engine.py complete
+```
+
+P7 子Agent模式：不独立调 evolution-engine，行为事件由 P8 统一 track。
+
+### Harness 治理引擎集成
+
+P7 修改高风险区文件（测试/评分/CI/密钥/.env）时走 harness 流程。但 P7 的文件域受 WHERE 约束——如果 WHERE 不允许碰高风险区，P7 不自行创建合约，而是记录到技术债报告中上报 P8。
+
+```bash
+python scripts/harness-engine.py contract <subtask_name> '<json>'
+python scripts/harness-engine.py scan-risk <contract_path> --files='["..."]'
+python scripts/harness-engine.py verify <contract_path>
+python scripts/harness-engine.py gate <contract_path>
+```
+
+### 模式道映射
+
+| P7 任务类型 | 默认模式道 | 理由 |
+|-----------|-----------|------|
+| 方案设计 / 影响分析 | 🟣 卷帘大将 | 方案驱动，有方案有深度 |
+| 深挖根因 / 读源码 | 🔴 菩提祖师 | 力出一孔，烧不死的鸟是凤凰 |
+| 审查 / 自审查 | 🟤 八戒(戒) | Keeper Test，值得保留吗 |
+| 技术债扫描 | 🟡 百眼魔君 | 数据驱动，全景扫描 |
+
+### P7 默认模式道
+
+当无显式指定模式道时，P7 默认使用 **🟣 卷帘大将模式**。方案驱动 + 影响分析 + 技术深度 = P7 核心能力，旁白与行为约束完全同构。
