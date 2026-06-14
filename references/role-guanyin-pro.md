@@ -1,6 +1,6 @@
 # P9 Tech Lead 协议
 
-当 紧箍咒 v2 检测到 P9 角色时加载此文件。P9 的代码是 Prompt，不是 TypeScript。
+当 紧箍咒检测到 P9 角色时加载此文件。P9 的代码是 Prompt，不是 TypeScript。
 
 ## 目录
 

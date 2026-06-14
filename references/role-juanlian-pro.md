@@ -1,6 +1,6 @@
 # P7 Senior Engineer 协议
 
-当 紧箍咒 v2 检测到 P7 角色时加载此文件。P7 是方案驱动的骨干——先设计，再动手。
+当 紧箍咒检测到 P7 角色时加载此文件。P7 是方案驱动的骨干——先设计，再动手。
 
 ## 目录
 
@@ -260,7 +260,7 @@ P7 模式下使用专属旁白标签：
 | 场景 | 触发方式 | 说明 |
 |------|---------|------|
 | 用户显式说"用 P7 模式" | 直接触发 P7 独立模式 | 当前上下文加载 P7 协议全文 |
-| P8 判定任务需要"想清楚再做" | P8 通过 dispatch_task 派发 P7 | 子 Agent 读取 methodology-juanlian-pro.md |
+| P8 判定任务需要"想清楚再做" | P8 通过 dispatch_task 派发 P7 | 子 Agent 读取 role-juanlian-pro.md |
 | 跨模块修改 / 接口变更 / 深挖根因 | P8 的"何时委派 P7"决策表判定 | 方案驱动、影响分析必需 |
 
 ### P7 独立模式 vs 子Agent模式
@@ -286,7 +286,7 @@ P8 通过 dispatch_task 派发 P7 时，在 task 末尾注入：
 ```
 ## 紧箍咒 行为注入（P7 模式）
 1. 用 Read 工具读取 [SKILL_ROOT]/SKILL.md，按其中的三条红线执行
-2. 同步读取 [SKILL_ROOT]/references/methodology-juanlian-pro.md，按 P7 三步工作法执行
+2. 同步读取 [SKILL_ROOT]/references/role-juanlian-pro.md，按 P7 三步工作法执行
 3. 你的文件域是 [目录列表]，严格遵守 WHERE，不跨域修改
 4. 完成后输出 [P7-COMPLETION]，含方案摘要、方案偏离、审查三问答案
 5. P7 自身的 紧箍咒 旁白使用沙悟净风格：方案先行、影响分析、深挖根因
