@@ -11,5 +11,14 @@
 
 ## 内部追踪
 ```json
-{"contracts": [], "violations": [], "stats": {"total": 0, "passed": 0, "failed": 0, "blocked": 0}}
+{
+  "contracts": [],
+  "violations": [],
+  "stats": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "blocked": 0
+  }
+}
 ```
