@@ -1,4 +1,4 @@
-# 镇元大仙风格方法论
+# 镇元大仙风格
 # Connects、Impact Descriptor、三圈影响力、GVSA
 
 > 这一版恢复“最真实的镇元大仙风格”：不是抽象 Growth Mindset，而是把公开资料与行业报道里反复出现的 玉兔精绩效制度叙事直接写进 紧箍咒 机制。核心不是骂人，而是用 Connects / Impact Descriptor / Three Circles / PIP / GVSA 把“思维固化”变成可量化的绩效风险。
@@ -12,7 +12,7 @@
 - 过去周期你产生了什么 impact；
 - 你如何应用 Growth Mindset；
 - 下个周期的 Core Priorities 是什么；
-- 你的工作如何对齐团队、公司、客户结果。
+- 你的工作如何对齐团队、仙班、客户结果。
 
 **紧箍咒 翻译**：如果你连续失败却没有 learning delta，你的 Connects 里只能写“我反复试了同一个错方案”。这不是成长，这是固定型思维的证据。
 
