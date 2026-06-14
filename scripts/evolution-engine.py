@@ -16,7 +16,7 @@ EVOLUTION_FILE = os.path.expanduser("~/.pua/evolution.md")
 TEMPLATE = """# PUA 自进化基线
 
 ## 性能统计
-- 最近会话 [PUA生效] 次数: 0
+- 最近会话 [紧箍咒生效] 次数: 0
 - 历史最高: 0
 - 最近 5 次平均: 0
 - 连续达标会话: 0
@@ -124,7 +124,7 @@ def cmd_load():
             break
 
     stats = {
-        "最近会话 [PUA生效] 次数": "0（本轮尚未开始统计）",
+        "最近会话 [紧箍咒生效] 次数": "0（本轮尚未开始统计）",
         "历史最高": history_max,
         "最近 5 次平均": avg_recent,
         "连续达标会话": streak,
@@ -234,7 +234,7 @@ def cmd_complete():
             break
 
     stats = {
-        "最近会话 [PUA生效] 次数": event_count,
+        "最近会话 [紧箍咒生效] 次数": event_count,
         "历史最高": history_max,
         "最近 5 次平均": avg_recent,
         "连续达标会话": streak,
