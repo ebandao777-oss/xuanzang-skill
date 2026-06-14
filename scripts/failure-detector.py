@@ -6,7 +6,7 @@ failure-detector.py — 突破检测引擎
 1. 错误签名收集与模式分类（SPINNING/EXPLORING/MIXED）
 2. 连续失败追踪与突破检测（≥3 失败后一次成功 → 突破）
 3. 峰值压力级别记录
-4. 状态文件：~/.xuanzang/.error_history.jsonl / .peak_pressure_level
+4. 状态文件：data/.error_history.jsonl / data/.peak_pressure_level
 
 ⚠ 运行边界：
   - 本脚本需手动调用，传入上一条工具的执行结果。
@@ -27,9 +27,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 # ── 状态文件路径 ──────────────────────────────────────────
-XUANZANG_DIR = Path.home() / ".xuanzang"
-HISTORY_FILE = XUANZANG_DIR / ".error_history.jsonl"
-PEAK_FILE = XUANZANG_DIR / ".peak_pressure_level"
+SKILL_ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = SKILL_ROOT / "data"
+HISTORY_FILE = DATA_DIR / ".error_history.jsonl"
+PEAK_FILE = DATA_DIR / ".peak_pressure_level"
 
 # ── 错误模式签名 ──────────────────────────────────────────
 # SPINNING：同类错误反复出现（工具名相同 / 错误关键字相同）
@@ -53,7 +54,7 @@ EXPLORING_PATTERNS = [
 
 
 def ensure_dir():
-    XUANZANG_DIR.mkdir(parents=True, exist_ok=True)
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def classify_pattern(error_text: str, tool_name: str, history: list) -> str:
@@ -186,7 +187,7 @@ def report(tool_name: str, exit_code: str, error_output: str = ""):
         print("[紧箍咒 突破 ✨] 连续 %d 次失败后突破。压力归零 L0。" % fails_before,
               file=sys.stderr)
         # 写入 evolution.md 突破记录骨架
-        evolution_file = XUANZANG_DIR / "evolution.md"
+        evolution_file = DATA_DIR / "evolution.md"
         entry = (
             f"\n## 突破 {timestamp[:10]}\n\n"
             f"- **连续失败**: {fails_before} 次\n"

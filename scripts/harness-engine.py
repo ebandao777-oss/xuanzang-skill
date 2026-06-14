@@ -13,6 +13,7 @@ Marvis 降级版：四代理塌缩为单 P8 + 脚本强制机械边界。
 """
 
 import os
+from pathlib import Path
 import json
 import sys
 import hashlib
@@ -22,7 +23,9 @@ import time
 from datetime import datetime, timezone, timedelta
 
 tz = timezone(timedelta(hours=8))
-HARNESS_STATE = os.path.expanduser("~/.xuanzang/harness.md")
+SKILL_ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = SKILL_ROOT / "data"
+HARNESS_STATE = DATA_DIR / "harness.md"
 
 # ─── 风险区定义 ───
 RISK_ZONES = [
@@ -31,7 +34,7 @@ RISK_ZONES = [
     (r'(^|[/\\])(\.ci|\.github/workflows|Jenkinsfile|\.gitlab-ci\.yml)', "🟡 CI 流水线"),
     (r'(^|[/\\])(hidden|private|secret|solution)([/\\]|$)', "🔴 隐藏答案/私密区"),
     (r'(^|[/\\])\.env($|\.)', "🔴 环境密钥"),
-    (r'\.xuanzang[/\\]', "🔴 玄奘 治理资产(本引擎自身)"),
+    (r'(^|[/\\])xuanzang-skill[/\\]data[/\\]', "🔴 玄奘 治理资产(本引擎自身)"),
     (r'(^|[/\\])(\.git[/\\]|\.gitignore|\.gitattributes)', "🟠 版本控制配置"),
     (r'(^|[/\\])\.(ssh|aws|kube)([/\\]|$)', "🔴 敏感配置"),
     (r'(^|[/\\])package-lock\.json$|(^|[/\\])yarn\.lock$|(^|[/\\])pnpm-lock\.yaml$', "🟠 依赖锁文件"),

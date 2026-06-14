@@ -4,6 +4,7 @@
 """
 
 import os
+from pathlib import Path
 import json
 import sys
 import time
@@ -11,7 +12,9 @@ import re
 from datetime import datetime, timezone, timedelta
 
 tz = timezone(timedelta(hours=8))  # UTC+8
-EVOLUTION_FILE = os.path.expanduser("~/.xuanzang/evolution.md")
+SKILL_ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = SKILL_ROOT / "data"
+EVOLUTION_FILE = DATA_DIR / "evolution.md"
 
 TEMPLATE = """# 玄奘 自进化基线
 
