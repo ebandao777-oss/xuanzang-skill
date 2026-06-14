@@ -142,7 +142,7 @@ echo "{\"agent\":\"<id>\",\"reason\":\"<reason>\",\"ts\":\"$(date -u +%FT%TZ)\"}
 
 **三层防御**：
 
-1. **Stop hook 层**（自动）：每次主会话 Stop 时扫一次 `$HOME/.xuanzang/loop-*.md`，stale 的直接清理（已在 `pua-loop-hook.sh` 实现）
+1. **Stop hook 层**（自动）：每次主会话 Stop 时扫一次 `$HOME/.xuanzang/loop-*.md`，stale 的直接清理（已在 `harness-engine.py` 实现）
 2. **SessionStart hook 层**（自动）：新会话启动时扫 state 目录，stale 的提示用户确认
 3. **用户显式**（手动）：`/pua:reap-orphans` 一键扫描 + 回收
 
@@ -150,7 +150,7 @@ echo "{\"agent\":\"<id>\",\"reason\":\"<reason>\",\"ts\":\"$(date -u +%FT%TZ)\"}
 
 ## §Switches — 开关语义映射
 
-紧箍咒 的 14 个 slash 命令在本协议下的生命周期语义：
+紧箍咒 的 12 个 slash 命令在本协议下的生命周期语义：
 
 | 命令 | 原语义 | 扩展后语义 | 映射操作 |
 |------|--------|-----------|---------|
@@ -174,13 +174,13 @@ echo "{\"agent\":\"<id>\",\"reason\":\"<reason>\",\"ts\":\"$(date -u +%FT%TZ)\"}
 
 | Hook 事件 | 自治行为 | 实际落地 |
 |----------|---------|---------|
-| `SessionStart` | 扫 stale loop state，提示用户确认回收 | ✅ `session-restore.sh` |
+| `SessionStart` | 扫 stale loop state，提示用户确认回收 | ✅ `python scripts/evolution-engine.py status` |
 | `PreCompact` | dump 活跃 agent 清单到 HANDOFF | ✅ inline prompt hook |
-| `Stop`（主会话） | 走 loop 逻辑 + stale 兜底清理 | ✅ `pua-loop-hook.sh` + Gate 0 防御 |
-| `SubagentStop` | **agent 完成会计**：写 teardown.jsonl + 从 active-agents.json 移除 | ✅ `subagent-teardown.sh`（v3.1 新增） |
+| `Stop`（主会话） | 走 loop 逻辑 + stale 兜底清理 | ✅ `python scripts/harness-engine.py gate` |
+| `SubagentStop` | **agent 完成会计**：写 teardown.jsonl + 从 active-agents.json 移除 | ✅ `python scripts/harness-engine.py report` |
 | `PostToolUse:Task`（计划） | spawn 时记录 agent_id 到 active-agents.json | ⏳ 待实现（需 Claude Code 该事件支持） |
 
-**重要**：Claude Code 中 Stop 事件**仅**主会话触发，subagent 的 Stop 事件不会传到 Stop 钩子——所以监控 subagent 必须用独立的 SubagentStop 注册。pua-loop-hook.sh 的 Gate 0 保留作为"防御层"兜住未来调度变化，但不是必需防线。
+**重要**：Claude Code 中 Stop 事件**仅**主会话触发，subagent 的 Stop 事件不会传到 Stop 钩子——所以监控 subagent 必须用独立的 SubagentStop 注册。`harness-engine.py gate` 保留作为"防御层"兜住未来调度变化，但不是必需防线。
 
 ---
 
@@ -190,6 +190,6 @@ echo "{\"agent\":\"<id>\",\"reason\":\"<reason>\",\"ts\":\"$(date -u +%FT%TZ)\"}
 
 - ✅ `TeardownDelete` 在 skill 文档里出现次数 ≥ `TeamCreate` 的一半
 - ✅ `teardown` / `释放` / `回收` 在 methodology-guanyin-pro 阶段四后出现 ≥ 3 次
-- ✅ `pua-loop-hook.sh` 有 Gate 0（subagent 识别）
-- ✅ `/pua:team-status`、`/pua:reap-orphans`、`/pua:teardown-all` 存在
+- ✅ `harness-engine.py gate` 存在并实现 gate 子命令
+- ✅ `/pua:team-status`、`/pua:reap-orphans`、`/pua:teardown-all` 已在 `references/platform.md` 中定义
 - ✅ `$HOME/.xuanzang/teardown.jsonl` 可写且有 schema
