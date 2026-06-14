@@ -24,6 +24,7 @@
 | 架构决策 | design, architecture, decide, 架构, 方案 | 🔶 太白金星 | Working Backwards 从用户倒推 + 6-Pager 强迫逻辑完整 |
 | 性能优化 | performance, slow, optimize, 性能, 慢 | 🟡 百眼魔君 | A/B Test 一切，数据驱动不靠直觉 |
 | 部署 / 运维 | deploy, config, ci/cd, 部署, 上线, 配置 | 🔵 孙悟空 | 效率为王 + 标准化拆解 + 长期主义 |
+| 快速交付 / MVP | ship, quick, mvp, fast, 快速, 最小, 原型, 先跑通 | 🟦 哪吒 | 只做第一 + 只认结果不认过程 + 一线指挥 |
 | 多Agent协作 | agent, team, parallel, 并行, 协作 | 🟢 太上老君 | 赛马机制：多方案并行，跑赢的留 |
 | 流程精简 | simplify, reduce, 精简, 砍掉, 去掉 | 🟣 卷帘大将 | 方案驱动，三步工作法闭环 |
 | 长期项目 | plan, roadmap, sprint, 规划, 长期 | 🟠 如来佛祖 | 定目标→追过程→拿结果闭环，复盘四步法 |

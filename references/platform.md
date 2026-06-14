@@ -102,11 +102,11 @@
 └─────────────────────────────────────────────────┘
 ```
 
-选择后更新 `~/.xuanzang/config.json` 中的 `flavor` 字段。如果 config.json 不存在，先创建：
+选择后更新 `~/.xuanzang/config.json` 中的 `role` 字段。如果 config.json 不存在，先创建：
 
 ```json
 {
-  "flavor": "alibaba",
+  "role": "如来佛祖",
   "created_at": "ISO时间戳"
 }
 ```
