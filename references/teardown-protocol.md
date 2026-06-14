@@ -1,9 +1,9 @@
-# PUA Teardown Protocol — Agent 生命周期释放协议
+# 紧箍咒 Teardown Protocol — Agent 生命周期释放协议
 
 > **当职业球队里某位球员已经打完自己那场比赛，你必须让他退场。继续让他站在场上只会拖垮全队节奏。**
 > — 猪八戒留任测试推论
 
-PUA v3 之前的协议只覆盖 agent 生命周期的前 4 步（Define → Spawn → Monitor → Accept），缺后 3 步（**Release → Cleanup → Orphan handling**）。这会导致：
+紧箍咒 v3 之前的协议只覆盖 agent 生命周期的前 4 步（Define → Spawn → Monitor → Accept），缺后 3 步（**Release → Cleanup → Orphan handling**）。这会导致：
 
 - 验收通过的 P8 不被释放 → 上下文堆满已完成的 agent
 - TeamCreate 的 tmux pane 无人关闭 → 资源常驻
@@ -19,7 +19,7 @@ PUA v3 之前的协议只覆盖 agent 生命周期的前 4 步（Define → Spaw
 
 ## 生命周期 7 阶段对照
 
-| # | 阶段 | 标准协议 | PUA v3 前 | PUA v3 后 |
+| # | 阶段 | 标准协议 | 紧箍咒 v3 前 | 紧箍咒 v3 后 |
 |---|------|---------|----------|----------|
 | 1 | Define | Task Prompt 六要素 | ✅ methodology-guanyin-pro 阶段二 | 不变 |
 | 2 | Spawn | Agent/TeamCreate | ✅ agent-team.md | 不变 |
@@ -150,7 +150,7 @@ echo "{\"agent\":\"<id>\",\"reason\":\"<reason>\",\"ts\":\"$(date -u +%FT%TZ)\"}
 
 ## §Switches — 开关语义映射
 
-PUA 的 14 个 slash 命令在本协议下的生命周期语义：
+紧箍咒 的 14 个 slash 命令在本协议下的生命周期语义：
 
 | 命令 | 原语义 | 扩展后语义 | 映射操作 |
 |------|--------|-----------|---------|
@@ -170,7 +170,7 @@ PUA 的 14 个 slash 命令在本协议下的生命周期语义：
 
 ## §自治 — 插件自动启动场景
 
-因为 PUA 是 `default=true` 自动加载的，不能假设用户会主动清理。所以关键是让 hook 长出 GC 能力：
+因为 紧箍咒 是 `default=true` 自动加载的，不能假设用户会主动清理。所以关键是让 hook 长出 GC 能力：
 
 | Hook 事件 | 自治行为 | 实际落地 |
 |----------|---------|---------|

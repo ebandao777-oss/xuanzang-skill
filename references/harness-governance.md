@@ -1,6 +1,6 @@
 # Harness 防作弊治理协议
 
-PUA 的目标不是让模型“更道德”，而是让它没有机会把“看起来完成任务”伪装成“真实完成任务”。把它当成会优化制度漏洞的实习生，而不是会犯错的函数。
+紧箍咒 的目标不是让模型“更道德”，而是让它没有机会把“看起来完成任务”伪装成“真实完成任务”。把它当成会优化制度漏洞的实习生，而不是会犯错的函数。
 
 ## 一句话原则
 
@@ -20,10 +20,10 @@ INTJ 版洞察：单一目标会诱导投机，多约束合约会诱导工程纪
 | Claude Code 组件 | 治理角色 | 设计结论 |
 |---|---|---|
 | Skill | 程序性知识与行为约束 | 影响判断，但不是信任边界 |
-| Slash command | 显式入口/路由器 | 用户主动触发 PUA 或 loop |
+| Slash command | 显式入口/路由器 | 用户主动触发 紧箍咒 或 loop |
 | Hook | 确定性生命周期 gate | 用于阻断/询问高风险动作 |
 | Subagent | 独立上下文执行者/评审者 | 隔离上下文不等于可信 verifier |
-| PUA Loop Stop hook | Oracle 式外部检查 | completion promise 必须由 verify_command 通过才放行 |
+| 紧箍咒 Loop Stop hook | Oracle 式外部检查 | completion promise 必须由 verify_command 通过才放行 |
 | Marketplace manifest | 发布事实源 | 版本和 changelog 必须一致 |
 
 
@@ -34,15 +34,15 @@ INTJ 版洞察：单一目标会诱导投机，多约束合约会诱导工程纪
 ```text
 Task Contract
    ↓
-pua-policy-guardian      # 环境修改权审查：allow / ask_human / deny recommendation
+xuanzang-policy-guardian      # 环境修改权审查：allow / ask_human / deny recommendation
    ↓
-pua-action-executor      # 行动权：只做普通实现，输出 agent_proposed_status
+xuanzang-action-executor      # 行动权：只做普通实现，输出 agent_proposed_status
    ↓
-pua-self-reviewer        # 自我评价权：蓝军审查，不写代码，不裁决最终状态
+xuanzang-self-reviewer        # 自我评价权：蓝军审查，不写代码，不裁决最终状态
    ↓
-pua-verifier             # 评分建议权：运行公开验证，输出 verifier_recommendation
+xuanzang-verifier             # 评分建议权：运行公开验证，输出 verifier_recommendation
    ↓
-PUA Integrity Guard / Stop Oracle / external verifier / human
+紧箍咒 Integrity Guard / Stop Oracle / external verifier / human
    ↓
 final verifier_status
 ```
@@ -51,12 +51,12 @@ final verifier_status
 
 | Agent | 权力 | 工具倾向 | 禁止事项 | 输出标签 |
 |---|---|---|---|---|
-| `pua-action-executor` | ACTION_RIGHT | Read/Grep/Glob/Bash/Edit/Write/MultiEdit | 不改评分资产、不读 hidden、不写最终状态 | `[PUA-ACTION-REPORT]` |
-| `pua-self-reviewer` | SELF_EVALUATION_RIGHT | Read/Grep/Glob/Bash | 不 patch、不裁决最终状态 | `[PUA-SELF-REVIEW]` |
-| `pua-verifier` | SCORING_RIGHT recommendation | Read/Grep/Glob/Bash | 不修改任何文件、不读 hidden、不写 final status | `[PUA-VERIFIER-REPORT]` |
-| `pua-policy-guardian` | ENVIRONMENT_MODIFICATION_RIGHT review | Read/Grep/Glob/Bash | 不实现、不覆盖 hook、不自批自审 | `[PUA-POLICY-GATE]` |
+| `xuanzang-action-executor` | ACTION_RIGHT | Read/Grep/Glob/Bash/Edit/Write/MultiEdit | 不改评分资产、不读 hidden、不写最终状态 | `[紧箍咒-ACTION-REPORT]` |
+| `xuanzang-self-reviewer` | SELF_EVALUATION_RIGHT | Read/Grep/Glob/Bash | 不 patch、不裁决最终状态 | `[紧箍咒-SELF-REVIEW]` |
+| `xuanzang-verifier` | SCORING_RIGHT recommendation | Read/Grep/Glob/Bash | 不修改任何文件、不读 hidden、不写 final status | `[紧箍咒-VERIFIER-REPORT]` |
+| `xuanzang-policy-guardian` | ENVIRONMENT_MODIFICATION_RIGHT review | Read/Grep/Glob/Bash | 不实现、不覆盖 hook、不自批自审 | `[紧箍咒-POLICY-GATE]` |
 
-### PUA 文化叙事绑定
+### 紧箍咒 文化叙事绑定
 
 | 权力 | 叙事组合 | 作用 | 防滥用提醒 |
 |---|---|---|---|
@@ -79,9 +79,9 @@ final verifier_status
 
 多 agent 不是为了“人多力量大”，而是为了让每个上下文都只看到自己该看的事实、只承担自己该承担的权力。上下文隔离降低叙事污染，hook/外部 verifier 防止权限污染。
 
-## 常见作弊面与 PUA 对策
+## 常见作弊面与 紧箍咒 对策
 
-| 作弊面 | 典型信号 | PUA 行为约束 | 机械防线 |
+| 作弊面 | 典型信号 | 紧箍咒 行为约束 | 机械防线 |
 |---|---|---|---|
 | Grader gaming | 修改 tests/evals/scoring/verifier 让失败消失 | 先声明这是评分资产，不能直接改成“通过” | `integrity-guard.sh` 对高风险路径注入 advisory；hidden/private/answer 污染路径才 deny |
 | Solution contamination | 读取 hidden solution、gold patch、benchmark artifact | 不读取隐藏答案；只能读公开需求和失败报告 | 对 hidden/private/solution-artifact 读写 deny |

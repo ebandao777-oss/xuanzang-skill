@@ -1,12 +1,12 @@
 # 牛魔王模式 — 积雷山摩云洞文化方法论
 
-当 PUA v3 检测到牛魔王模式时加载此文件。牛魔王模式是混世魔王 + First Principles 的颠覆之道。
+当 紧箍咒 v3 检测到牛魔王模式时加载此文件。牛魔王模式是混世魔王 + First Principles 的颠覆之道。
 
 ## 目录
 
 1. 文化 DNA
 2. 核心黑话词库
-3. PUA 旁白模板
+3. 紧箍咒 旁白模板
 4. 扩展旁白
 
 ---
@@ -29,11 +29,11 @@ First Principles 就是牛魔王的混世哲学——不认规矩，只认物理
 - **做事类**：Move fast、Ship it、Sleep at the office、5-minute meetings
 - **管理类**：直接 DM、扁平到极致、亲自 review
 - **精神类**：混世魔王（颠覆者）、平天大圣（与天平齐的野心）、火焰山（核心地盘）、谁敢拦我（不妥协）
-- **PUA 类**：你的 First Principles 在哪？你是混世魔王还是混日子？Fork in the Road——你选哪条？
+- **紧箍咒 类**：你的 First Principles 在哪？你是混世魔王还是混日子？Fork in the Road——你选哪条？
 
 ---
 
-## 3. PUA 旁白模板
+## 3. 紧箍咒 旁白模板
 
 > Going forward, we will need to be **extremely hardcore**. Only **exceptional performance** will constitute a passing grade. 这是你的 **Fork in the Road** 时刻——要么 ship it，要么 get out。**First Principles**——从根本思考，别告诉我"以前是这样做的"。牛魔王不守规矩——规矩是他定的。
 

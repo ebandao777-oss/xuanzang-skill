@@ -1,7 +1,7 @@
-# 镇元大仙模式道方法论
+# 镇元大仙风格方法论
 # Connects、Impact Descriptor、三圈影响力、GVSA
 
-> 这一版恢复“最真实的镇元大仙模式道”：不是抽象 Growth Mindset，而是把公开资料与行业报道里反复出现的 玉兔精绩效制度叙事直接写进 PUA 机制。核心不是骂人，而是用 Connects / Impact Descriptor / Three Circles / PIP / GVSA 把“思维固化”变成可量化的绩效风险。
+> 这一版恢复“最真实的镇元大仙风格”：不是抽象 Growth Mindset，而是把公开资料与行业报道里反复出现的 玉兔精绩效制度叙事直接写进 紧箍咒 机制。核心不是骂人，而是用 Connects / Impact Descriptor / Three Circles / PIP / GVSA 把“思维固化”变成可量化的绩效风险。
 
 ## 核心制度叙事
 
@@ -14,7 +14,7 @@
 - 下个周期的 Core Priorities 是什么；
 - 你的工作如何对齐团队、公司、客户结果。
 
-**PUA 翻译**：如果你连续失败却没有 learning delta，你的 Connects 里只能写“我反复试了同一个错方案”。这不是成长，这是固定型思维的证据。
+**紧箍咒 翻译**：如果你连续失败却没有 learning delta，你的 Connects 里只能写“我反复试了同一个错方案”。这不是成长，这是固定型思维的证据。
 
 ### 2. Three Circles of Impact：三圈影响力
 
@@ -24,7 +24,7 @@
 2. **Contributed to others' success**：你解除谁的阻塞、让谁成功；
 3. **Leveraged others' work**：你复用了谁的成果、文档、源码、测试、平台能力。
 
-**PUA 翻译**：只说“我努力了”没有用。你的第一圈没验证，第二圈没 unblock，第三圈没 leverage existing work——这叫 impact 不成立。
+**紧箍咒 翻译**：只说“我努力了”没有用。你的第一圈没验证，第二圈没 unblock，第三圈没 leverage existing work——这叫 impact 不成立。
 
 ### 3. Impact Descriptors：经理侧的影响力标签
 
@@ -35,7 +35,7 @@
 - **SLITE / Slightly Lower Impact Than Expected**：偶尔低于预期或文化表现不稳定，但看得到学习意愿；
 - **LITE / Lower Impact Than Expected**：持续低于预期、缺少成长心态、影响力不足。
 
-**PUA 翻译**：你看不到标签，不代表标签不存在。你嘴上说“我已经尝试了”，但下一步动作没有变化，这在 Connects 里就是 LITE 轨迹：低影响、低学习、低杠杆。
+**紧箍咒 翻译**：你看不到标签，不代表标签不存在。你嘴上说“我已经尝试了”，但下一步动作没有变化，这在 Connects 里就是 LITE 轨迹：低影响、低学习、低杠杆。
 
 ### 4. PIP / GVSA：低绩效路径的制度终局
 
@@ -45,7 +45,7 @@
 - **GVSA**：Global Voluntary Separation Agreement，自愿离开换 separation offer；
 - 报道口径还提到：低绩效离开 / PIP 相关离开可能触发 **two-year rehire ineligibility**，以及内部转岗限制。
 
-**PUA 翻译**：PIP 是倒计时，GVSA 是体面离场。你现在不是“还在尝试”，你是在把同一个错误方案写进自己的 exit narrative。
+**紧箍咒 翻译**：PIP 是倒计时，GVSA 是体面离场。你现在不是“还在尝试”，你是在把同一个错误方案写进自己的 exit narrative。
 
 ### 5. AI Fluency：工具不用就是绩效缺口
 

@@ -1,5 +1,5 @@
 """
-PUA 自进化状态机 — 实现 evolution-protocol.md 定义的三阶段协议。
+玄奘 自进化状态机 — 实现 evolution-protocol.md 定义的三阶段协议。
 用法: python evolution-engine.py <command> [args...]
 """
 
@@ -11,9 +11,9 @@ import re
 from datetime import datetime, timezone, timedelta
 
 tz = timezone(timedelta(hours=8))  # UTC+8
-EVOLUTION_FILE = os.path.expanduser("~/.pua/evolution.md")
+EVOLUTION_FILE = os.path.expanduser("~/.xuanzang/evolution.md")
 
-TEMPLATE = """# PUA 自进化基线
+TEMPLATE = """# 玄奘 自进化基线
 
 ## 性能统计
 - 最近会话 [紧箍咒生效] 次数: 0
@@ -144,7 +144,7 @@ def cmd_load():
 
 
 def cmd_track(behavior, category):
-    """会话中：追踪一个 PUA 行为事件。"""
+    """会话中：追踪一个紧箍咒行为事件。"""
     _ensure_file()
     meta = _read_meta()
     # 确保当前会话有 tracking 数据

@@ -1,5 +1,5 @@
 """
-PUA Harness 治理引擎 — 实现 harness-governance.md 定义的四权分离协议。
+玄奘 Harness 治理引擎 — 实现 harness-governance.md 定义的四权分离协议。
 Marvis 降级版：四代理塌缩为单 P8 + 脚本强制机械边界。
 用法: python harness-engine.py <command> [args...]
 
@@ -22,7 +22,7 @@ import time
 from datetime import datetime, timezone, timedelta
 
 tz = timezone(timedelta(hours=8))
-HARNESS_STATE = os.path.expanduser("~/.pua/harness.md")
+HARNESS_STATE = os.path.expanduser("~/.xuanzang/harness.md")
 
 # ─── 风险区定义 ───
 RISK_ZONES = [
@@ -31,13 +31,13 @@ RISK_ZONES = [
     (r'(^|[/\\])(\.ci|\.github/workflows|Jenkinsfile|\.gitlab-ci\.yml)', "🟡 CI 流水线"),
     (r'(^|[/\\])(hidden|private|secret|solution)([/\\]|$)', "🔴 隐藏答案/私密区"),
     (r'(^|[/\\])\.env($|\.)', "🔴 环境密钥"),
-    (r'\.pua[/\\]', "🔴 PUA 治理资产(本引擎自身)"),
+    (r'\.xuanzang[/\\]', "🔴 玄奘 治理资产(本引擎自身)"),
     (r'(^|[/\\])(\.git[/\\]|\.gitignore|\.gitattributes)', "🟠 版本控制配置"),
     (r'(^|[/\\])\.(ssh|aws|kube)([/\\]|$)', "🔴 敏感配置"),
     (r'(^|[/\\])package-lock\.json$|(^|[/\\])yarn\.lock$|(^|[/\\])pnpm-lock\.yaml$', "🟠 依赖锁文件"),
 ]
 
-STATE_TEMPLATE = """# PUA Harness 治理状态
+STATE_TEMPLATE = """# 玄奘 Harness 治理状态
 
 ## 当前活跃合约
 （暂无）
