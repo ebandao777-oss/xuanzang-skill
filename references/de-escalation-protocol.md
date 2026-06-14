@@ -14,7 +14,7 @@
 
 ### 触发条件
 
-由 `failure-detector.sh` 自动检测：
+由 `failure-detector.py` 自动检测：
 - 连续失败 ≥3 次（已达 L2+）
 - 下一次 Bash 工具调用成功（exit code 0 且无 error pattern）
 - → 触发 `[紧箍咒 突破 ✨]` 注入
@@ -29,6 +29,7 @@
    - 失败的根因是什么？（一句话）
    - 有效的方法是什么？（一句话）
    - 下次遇到同类问题的直达路径（写入 memory/evolution.md）
+   - failure-detector.py 已在突破发生时自动创建 evolution.md 骨架条目；P8 降压时将其填写完整
 4. **验证完成** — 确认解决方案完整，不要庆祝太早
 
 ### 不触发降压的情况
@@ -87,7 +88,7 @@
 
 ### 注入方式
 
-这些换框提示由 **skill prompt 层**根据当前 failure_count 自动输出，不依赖 hook 检测。Hook 只负责提供 failure_count 和 pattern 分类，LLM 根据这些结构化信号自行决定使用哪层换框。
+换框内容由 **P8 自动化调度循环**根据 failure-detector.py 输出的 `level` 字段直接查表注入，不依赖 hook 检测。`level=2/3/4` 时 P8 从 SKILL.md 深层换框节逐字取原文注入下一轮回复，无判断、无分支。
 
 ---
 
@@ -109,18 +110,22 @@
 | ⬜ 小白龙 | A-player、ship | "A-player work. Real artists ship." | 美学 + 交付 |
 | 🔶 太白金星 | LP、Delivered | "Delivered Results." | LP 体系 |
 | 🪟 镇元大仙 | Impact、Successful | "Trajectory: Successful Impact." | 学习闭环 |
+| 📌 赤脚大仙 | 闭环、证据链 | "闭环了。有证据链的交付才是交付。" | 凡尘验收 |
+| 🔱 二郎神 | 本分、效率 | "本分到了。极致效率，不看包装。" | 结果导向 |
 
 ---
 
 ## Part 4: 与现有系统的集成
 
-### failure-detector.sh (Hook Layer)
-- 已实现：错误签名收集、模式分类（SPINNING/EXPLORING/MIXED）、突破检测、降压注入
+### failure-detector.py (检测引擎)
+- 已实现：错误签名收集、模式分类（SPINNING/EXPLORING/MIXED）、突破检测、降压信号输出
+- 调用方式：`python scripts/failure-detector.py report <tool> <exit_code> [error]`
 - 状态文件：`~/.xuanzang/.error_history.jsonl`、`~/.xuanzang/.peak_pressure_level`
+- ⚠ 无 hooks 基础设施时需 P8 调度层手动调用；hooks/ 建立后可注册为 PostToolUse hook
 
 ### SKILL.md (Prompt Layer)
-- 加载本文件后，LLM 根据 failure_count + pattern 类型自行选择换框层级
-- Hook 注入的 `[紧箍咒 突破 ✨]` 触发降压行为
+- P8 自动化调度循环加载本文件后，根据 detector JSON 的 `level` 字段查表注入对应层级的换框原文
+- P8 自动突破检测产生的 `[紧箍咒 突破 ✨]` 触发 Part 1 降压行为 + Part 3 风格认可话术
 
 ### methodology-router.md (方法论层)
 - 本协议的深层换框是 methodology-router 的**补充**，不是替代
@@ -128,5 +133,6 @@
 - 两者可以同时使用：换风格的同时换视角
 
 ### evolution.md (自进化层)
-- 突破后的方法论沉淀自动追加到 `~/.xuanzang/evolution.md`
+- 突破发生时 failure-detector.py 自动追加方法论沉淀骨架到 `~/.xuanzang/evolution.md`（包含连续失败次数、模式、空位字段）
+- P8 降压行为中填写根因/有效方法/直达路径，完成条目
 - Pro 模块的基线跟踪会捕获这些沉淀

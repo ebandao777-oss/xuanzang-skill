@@ -98,7 +98,7 @@ TeamDelete({team_name: "<project-team>"})
 ```bash
 # 在 state 文件里记 agent_id 和 spawn_time
 # 巡检命令（也可用作 /pua:reap-orphans 后端）
-jq '.agents[] | select(.spawn_time < (now - 1800)) | .id' ~/.claude/pua/active-agents.json
+jq '.agents[] | select(.spawn_time < (now - 1800)) | .id' ~/.xuanzang/active-agents.json
 ```
 
 ### R6. subagent 禁止再 spawn team（禁嵌套孤儿）
@@ -122,13 +122,13 @@ hook 层读 HOOK_INPUT.parent_session_id，若非空且尝试 TeamCreate → 拒
 git worktree list --porcelain | grep -A1 "<branch>" && git worktree remove ...
 
 # 2. 清 state file
-rm -f "$HOME/.claude/pua/agent-<id>.state"
+rm -f "$HOME/.xuanzang/agent-<id>.state"
 
 # 3. 关 tmux pane（若是 TeamCreate 成员）
 tmux kill-pane -t <pane_id>
 
 # 4. 记录到 teardown log
-echo "{\"agent\":\"<id>\",\"reason\":\"<reason>\",\"ts\":\"$(date -u +%FT%TZ)\"}" >> "$HOME/.claude/pua/teardown.jsonl"
+echo "{\"agent\":\"<id>\",\"reason\":\"<reason>\",\"ts\":\"$(date -u +%FT%TZ)\"}" >> "$HOME/.xuanzang/teardown.jsonl"
 ```
 
 ---
@@ -142,7 +142,7 @@ echo "{\"agent\":\"<id>\",\"reason\":\"<reason>\",\"ts\":\"$(date -u +%FT%TZ)\"}
 
 **三层防御**：
 
-1. **Stop hook 层**（自动）：每次主会话 Stop 时扫一次 `$HOME/.claude/pua/loop-*.md`，stale 的直接清理（已在 `pua-loop-hook.sh` 实现）
+1. **Stop hook 层**（自动）：每次主会话 Stop 时扫一次 `$HOME/.xuanzang/loop-*.md`，stale 的直接清理（已在 `pua-loop-hook.sh` 实现）
 2. **SessionStart hook 层**（自动）：新会话启动时扫 state 目录，stale 的提示用户确认
 3. **用户显式**（手动）：`/pua:reap-orphans` 一键扫描 + 回收
 
@@ -164,7 +164,7 @@ echo "{\"agent\":\"<id>\",\"reason\":\"<reason>\",\"ts\":\"$(date -u +%FT%TZ)\"}
 **设计原则**：
 - **幂等**：重复执行同一开关不会产生副作用（re-rm 无害、re-kill 先检查）
 - **级联**：顶层开关触发底层清理，反向不允许（P7 不能 teardown P8）
-- **可观测**：所有 teardown 写 `$HOME/.claude/pua/teardown.jsonl`，便于复盘
+- **可观测**：所有 teardown 写 `$HOME/.xuanzang/teardown.jsonl`，便于复盘
 
 ---
 
@@ -192,4 +192,4 @@ echo "{\"agent\":\"<id>\",\"reason\":\"<reason>\",\"ts\":\"$(date -u +%FT%TZ)\"}
 - ✅ `teardown` / `释放` / `回收` 在 methodology-guanyin-pro 阶段四后出现 ≥ 3 次
 - ✅ `pua-loop-hook.sh` 有 Gate 0（subagent 识别）
 - ✅ `/pua:team-status`、`/pua:reap-orphans`、`/pua:teardown-all` 存在
-- ✅ `$HOME/.claude/pua/teardown.jsonl` 可写且有 schema
+- ✅ `$HOME/.xuanzang/teardown.jsonl` 可写且有 schema
