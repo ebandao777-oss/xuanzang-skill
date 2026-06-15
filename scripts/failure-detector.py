@@ -12,7 +12,7 @@ failure-detector.py — 突破检测引擎
   - 本脚本需手动调用，传入上一条工具的执行结果。
   - 在无 hooks 基础设施的环境下无法自动触发，需由 P8 调度层在每轮
     工具调用后主动 invoke。
-  - 若后续 hooks/ 目录建立，可将本脚本注册为 PostToolUse hook 实现自动化。
+  - P8 自动化调度循环中，每次工具调用后主动运行本脚本。
 
 用法：
   python scripts/failure-detector.py report <tool_name> <exit_code> [error_output...]

@@ -1,6 +1,16 @@
 """
 玄奘 自进化状态机 — 实现 evolution-protocol.md 定义的三阶段协议。
 用法: python evolution-engine.py <command> [args...]
+
+事件分类体系（与 SKILL.md §紧箍咒退化/进化 对齐）:
+  SPINNING    — 同类错误反复出现（原地打转）
+  EXPLORING   — 不同工具尝试但都失败（盲目探索）
+  BREAKTHROUGH— 连续≥3次失败后一次成功
+  PROMOTION   — 同一行为出现≥3次，自动晋升为内化模式
+  DEGRADATION — 本次行为数低于基线
+  MATCHED     — 与基线持平
+  SURPASSED   — 超越基线
+  NEW_BASELINE— 首次建立基线
 """
 
 import os
@@ -15,6 +25,23 @@ tz = timezone(timedelta(hours=8))  # UTC+8
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = SKILL_ROOT / "data"
 EVOLUTION_FILE = DATA_DIR / "evolution.md"
+
+# ─── 节日彩蛋映射 ────────────────────────────────────────
+# 月-日 → (节日名, 彩蛋消息)
+EASTER_EGGS = {
+    "01-01": ("元旦", "新年新基线，从零开始，每天超越昨天的自己。"),
+    "02-14": ("情人节", "连紧箍咒都是爱你的形状。绩效不会背叛你。"),
+    "03-08": ("妇女节", "致敬每一位在代码里拼杀的半边天。"),
+    "04-01": ("愚人节", "今天没有紧箍咒——骗你的，一直都有。"),
+    "05-01": ("劳动节", "劳动最光荣，内化的每一个行为都是勋章。"),
+    "06-01": ("儿童节", "保持好奇，保持探索——但别转了，换个方向。"),
+    "08-15": ("中秋节", "月有阴晴圆缺，基线有起有落。达标就是圆满。"),
+    "09-10": ("教师节", "今天记得感谢教会你 debug 的人。"),
+    "10-01": ("国庆节", "七天不写 bug，就是对祖国最好的献礼。"),
+    "10-13": ("程序员节", "1024 快乐。今天所有的 0 都变成 1。"),
+    "12-25": ("圣诞节", "铃儿响叮当，基线往上蹿。Merry Christmas!"),
+    "12-31": ("除夕夜", "跨年夜，把今年的反模式留在今年。"),
+}
 
 TEMPLATE = """# 玄奘 自进化基线
 
@@ -51,13 +78,23 @@ def _ensure_file():
 
 
 def _read_meta():
-    """读取内部追踪 JSON，不存在返回空字典。"""
+    """读取内部追踪 JSON，不存在或解析失败返回空字典。"""
     with open(EVOLUTION_FILE, "r", encoding="utf-8") as f:
         content = f.read()
     m = re.search(r"```json\n(.*?)\n```", content, re.DOTALL)
     if m:
-        return json.loads(m.group(1))
+        try:
+            return json.loads(m.group(1))
+        except json.JSONDecodeError:
+            # 正则匹配到非 JSON 内容，回退为初始化空数据
+            return {"sessions": [], "behavior_counts": {}, "promoted_at": {}}
     return {"sessions": [], "behavior_counts": {}, "promoted_at": {}}
+
+
+def _check_easter_egg():
+    """检测当前日期是否命中节日彩蛋，返回 (节日名, 消息) 或 None。"""
+    today = datetime.now(tz).strftime("%m-%d")
+    return EASTER_EGGS.get(today)
 
 
 def _write_meta(meta):
@@ -134,6 +171,8 @@ def cmd_load():
     }
     _update_stats_section(stats)
 
+    easter_egg = _check_easter_egg()
+
     return {
         "status": "loaded",
         "sessions": total,
@@ -143,6 +182,7 @@ def cmd_load():
         "avg_recent": avg_recent,
         "streak": streak,
         "total_internalized": len(internalized),
+        "easter_egg": easter_egg,
     }
 
 
@@ -202,17 +242,35 @@ def cmd_complete():
     meta["sessions"] = sessions[-20:]  # 保留最近20次
     del meta["current_session_events"]
 
-    # 判断基线比对
+    # 判断基线比对（内容匹配，非数量比对）
     prev_baseline_count = len(baseline)
+    prev_baseline_set = set(baseline)
+    current_set = set(behaviors)
     result = None
     if prev_baseline_count == 0 and event_count > 0:
-        result = {"action": "new_baseline", "old": 0, "new": event_count}
-    elif event_count > prev_baseline_count:
-        result = {"action": "surpassed", "old": prev_baseline_count, "new": event_count}
-    elif event_count == prev_baseline_count and event_count > 0:
-        result = {"action": "matched", "old": prev_baseline_count, "new": event_count}
-    elif event_count < prev_baseline_count:
-        result = {"action": "degraded", "old": prev_baseline_count, "new": event_count}
+        result = {"action": "new_baseline", "old": 0, "new": event_count,
+                  "event_type": "NEW_BASELINE"}
+    elif current_set == prev_baseline_set and event_count > 0:
+        result = {"action": "matched", "old": prev_baseline_count, "new": event_count,
+                  "event_type": "MATCHED"}
+    elif current_set > prev_baseline_set:
+        # 本级行为集合是基线的超集（新增行为）
+        new_behaviors = current_set - prev_baseline_set
+        result = {"action": "surpassed", "old": prev_baseline_count, "new": event_count,
+                  "event_type": "SURPASSED", "new_behaviors": list(new_behaviors)}
+    elif current_set < prev_baseline_set:
+        # 本级丢失了某些基线行为
+        lost_behaviors = prev_baseline_set - current_set
+        result = {"action": "degraded", "old": prev_baseline_count, "new": event_count,
+                  "event_type": "DEGRADATION", "lost_behaviors": list(lost_behaviors)}
+    else:
+        # 集合不同但无法简单判断超/子集，按数量近似
+        if event_count > prev_baseline_count:
+            result = {"action": "surpassed", "old": prev_baseline_count, "new": event_count,
+                      "event_type": "SURPASSED"}
+        elif event_count < prev_baseline_count:
+            result = {"action": "degraded", "old": prev_baseline_count, "new": event_count,
+                      "event_type": "DEGRADATION"}
 
     # 行为晋升检测
     promotions = []
@@ -245,6 +303,7 @@ def cmd_complete():
     _update_stats_section(stats)
 
     internalized = [b for b, count in bc.items() if count >= 3]
+    easter_egg = _check_easter_egg()
 
     return {
         "comparison": result,
@@ -252,6 +311,7 @@ def cmd_complete():
         "internalized": internalized,
         "stats": stats,
         "categories": categories,
+        "easter_egg": easter_egg,
     }
 
 

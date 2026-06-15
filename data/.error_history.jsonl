@@ -1,3 +1,0 @@
-{"ts": "2026-06-14T20:22:59.613598+00:00", "tool": "edit_file", "exit_code": 1, "error_snippet": "test failure 0", "pattern": "SPINNING", "consecutive_fails_before": 0, "current_level": 1, "peak_level": 1}
-{"ts": "2026-06-14T20:22:59.653642+00:00", "tool": "edit_file", "exit_code": 1, "error_snippet": "test failure 1", "pattern": "SPINNING", "consecutive_fails_before": 1, "current_level": 2, "peak_level": 2}
-{"ts": "2026-06-14T20:22:59.695015+00:00", "tool": "edit_file", "exit_code": 1, "error_snippet": "test failure 2", "pattern": "SPINNING", "consecutive_fails_before": 2, "current_level": 3, "peak_level": 3}

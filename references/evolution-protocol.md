@@ -153,6 +153,26 @@ evolution.md 存在？
 | **P9 验收** | P9 可以看到 P8 的进化轨迹 |
 | **auto memory** | evolution.md 的"项目级记忆"与 auto memory 互补（evolution 记行为模式，memory 记项目事实） |
 
+## CLI 命令参考
+
+三阶段协议通过 `scripts/evolution-engine.py` 落地执行：
+
+| 阶段 | 命令 | 用法 | 说明 |
+|------|------|------|------|
+| 阶段一 | `init` | `evolution-engine.py init` | 首次启动：创建 `data/evolution.md`，已存在时回退为 `load` |
+| 阶段一 | `load` | `evolution-engine.py load` | 会话启动：加载基线、已内化模式、项目记忆 |
+| 阶段二 | `track` | `evolution-engine.py track <behavior> <category>` | 追踪单个主动行为，分类写入会话事件 |
+| 阶段二 | `add-memory` | `evolution-engine.py add-memory <key> <value>` | 记录项目级记忆（构建命令、已知陷阱等） |
+| 阶段二 | `add-antipattern` | `evolution-engine.py add-antipattern <trap> <lesson>` | 记录反模式（踩坑 + 教训） |
+| 阶段三 | `complete` | `evolution-engine.py complete` | 任务完成：集合比对基线、更新统计、输出升级/降级 |
+| — | `status` | `evolution-engine.py status` | `load` 的别名，扫 stale state 并输出状态摘要 |
+
+**调度规则**：
+- `init` / `load` 由 P8 在技能加载时调用，后续会话仅调 `load`
+- `track` 每次 [紧箍咒生效 🔥] 标记时触发
+- `add-memory` / `add-antipattern` 由 P8 在方法论沉淀阶段按需写入
+- `complete` 在主要任务完成后由 P8 调用，刷新基线
+
 ## 防滥用
 
 - 基线**只升不降**——即使连续 3 次低于基线也不降低标准

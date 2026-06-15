@@ -24,6 +24,7 @@
 | Verifier | scripts/harness-engine.py verify | 运行验证命令并返回结果 |
 | Gate | scripts/harness-engine.py gate | 读取 Contract + Verifier 结果，通过或驳回 |
 | Scan Risk | scripts/harness-engine.py scan-risk | 在每次文件操作前自动扫描 |
+| Load | scripts/harness-engine.py load | 加载 `data/harness.md` 治理状态，返回活跃合约与违规统计 |
 | Runner | P8 agent (执行角色孙悟空) | 执行 Task Contract 中的交付项 |
 
 ## 四代理上下文隔离拓扑

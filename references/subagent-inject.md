@@ -1,6 +1,6 @@
 # 紧箍咒 Sub-agent 注入指令
 
-> 本文件由 SKILL.md 的 Sub-agent 注入章节引用。spawn 子 agent 时，将此文件内容追加到 spawn prompt 末尾。
+> 本文件由 SKILL.md 的 Sub-agent 注入章节引用。派发子 agent 时，将此文件内容追加到 dispatch_task 的 current_task 末尾。
 
 ---
 

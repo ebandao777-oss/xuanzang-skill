@@ -15,8 +15,8 @@
 | `/pua:on` | 打开默认加载 | ⚙ 系统 |
 | `/pua:off` | 关闭默认加载 + 级联 teardown | ⚙ 系统 |
 | `/pua:cancel-pua-loop` | 删除循环状态文件 + 原子清理 | ⚙ 系统 |
-| `/pua:team-status` | 列活跃 Agent / PID / TTL | ⚙ 系统 |
-| `/pua:reap-orphans` | 扫 stale agent 并 TaskStop | ⚙ 系统 |
+| `/pua:team-status` | 列活跃 Agent / TTL | ⚙ 系统 |
+| `/pua:reap-orphans` | 扫 stale agent 并回收 | ⚙ 系统 |
 | `/pua:teardown-all` | 级联释放全部 P10→P9→P8→P7 | ⚙ 系统 |
 
 ## 指令执行模板
@@ -94,9 +94,9 @@
 
 ### 10-12. 孤儿与团队管理
 
-**`/pua:team-status`**：读取 state 目录，列活跃 agent ID / spawn_time / TTL。
+**`/pua:team-status`**：读取 active-agents.json，列活跃 agent ID / dispatch_time / TTL。
 
-**`/pua:reap-orphans`**：扫 state 目录，age > 30min 的 stale agent 批量 TaskStop。
+**`/pua:reap-orphans`**：扫 active-agents.json，age > 30min 的 stale agent 批量回收。
 
 **`/pua:teardown-all`**：级联释放 P10→P9→P8→P7，写入 teardown.jsonl。
 

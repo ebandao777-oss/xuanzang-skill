@@ -10,6 +10,10 @@ Marvis 降级版：四代理塌缩为单 P8 + 脚本强制机械边界。
   verify <contract_path>           运行验收命令，写入 verifier_status
   gate <contract_path>             终审门控：验证全绿 + 无禁区触碰 + 合约未篡改
   report <contract_path>           生成交付报告
+  status                           列出当前活跃 agent（读 active-agents.json）
+  cleanup <agent_id> <reason>      释放 agent：从 active-agents.json 移除 + 清理 state 文件 + 写 teardown.jsonl
+  feedback <agent_id> <task_id> <score> <summary>
+                                   记录子 agent 评审反馈到 feedback.jsonl
 """
 
 import os
@@ -26,6 +30,9 @@ tz = timezone(timedelta(hours=8))
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = SKILL_ROOT / "data"
 HARNESS_STATE = DATA_DIR / "harness.md"
+ACTIVE_AGENTS_FILE = DATA_DIR / "active-agents.json"
+TEARDOWN_FILE = DATA_DIR / "teardown.jsonl"
+FEEDBACK_FILE = DATA_DIR / "feedback.jsonl"
 
 # ─── 风险区定义 ───
 RISK_ZONES = [
@@ -70,7 +77,11 @@ def _read_meta():
         content = f.read()
     m = re.search(r"```json\n(.*?)\n```", content, re.DOTALL)
     if m:
-        return json.loads(m.group(1))
+        try:
+            return json.loads(m.group(1))
+        except json.JSONDecodeError:
+            # 正则匹配到非 JSON 内容，回退为初始化空数据
+            return {"contracts": [], "violations": [], "stats": {"total": 0, "passed": 0, "failed": 0, "blocked": 0}}
     return {"contracts": [], "violations": [], "stats": {"total": 0, "passed": 0, "failed": 0, "blocked": 0}}
 
 
@@ -251,6 +262,15 @@ def cmd_scan_risk(contract_path):
     risk_flags = list(set(risk_flags))
 
     has_blocker = any(r["blocked"] for r in file_results)
+    # tampered 合约视为阻断级风险
+    if tampered:
+        has_blocker = True
+        risk_flags.append("🔴 合约已被篡改（完整性校验失败）")
+        file_results.append({
+            "file": contract_path,
+            "risk_zones": ["🔴 合约已被篡改"],
+            "blocked": True,
+        })
 
     result = {
         "files_scanned": len(files_to_scan),
@@ -467,6 +487,95 @@ def cmd_report(contract_path):
     }
 
 
+# ─── active-agents.json 管理 ─────────────────────────────
+
+def _ensure_active_agents():
+    os.makedirs(os.path.dirname(ACTIVE_AGENTS_FILE), exist_ok=True)
+    if not os.path.exists(ACTIVE_AGENTS_FILE):
+        with open(ACTIVE_AGENTS_FILE, "w", encoding="utf-8") as f:
+            json.dump({"agents": []}, f, ensure_ascii=False, indent=2)
+
+
+def cmd_status():
+    """列出当前活跃 agent 列表。"""
+    _ensure_active_agents()
+    with open(ACTIVE_AGENTS_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    agents = data.get("agents", [])
+    return {
+        "active_agents": agents,
+        "total": len(agents),
+    }
+
+
+def cmd_cleanup(agent_id, reason=""):
+    """
+    释放 agent：从 active-agents.json 移除 + 清理 state 文件 + 写入 teardown.jsonl。
+    调用时机：子 agent 完成/失败后，由 P8 调度层执行。
+    """
+    _ensure_active_agents()
+    with open(ACTIVE_AGENTS_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    agents = data.get("agents", [])
+    removed = [a for a in agents if a.get("agent_id") == agent_id]
+    agents = [a for a in agents if a.get("agent_id") != agent_id]
+    data["agents"] = agents
+
+    with open(ACTIVE_AGENTS_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    # 清理 state 文件（如果存在）
+    state_file = DATA_DIR / f"agent-{agent_id}.state"
+    state_existed = state_file.exists()
+    if state_existed:
+        state_file.unlink()
+
+    # 写 teardown.jsonl（格式与 SKILL.md R6 一致）
+    teardown_entry = {
+        "agent": agent_id,
+        "reason": reason,
+        "ts": datetime.now(tz).isoformat(),
+    }
+    if removed:
+        teardown_entry["registered_at"] = removed[0].get("registered_at")
+    with open(TEARDOWN_FILE, "a", encoding="utf-8") as f:
+        f.write(json.dumps(teardown_entry, ensure_ascii=False) + "\n")
+
+    return {
+        "cleanup": True,
+        "agent_id": agent_id,
+        "reason": reason,
+        "remaining": len(agents),
+        "state_cleaned": state_existed,
+    }
+
+
+def cmd_feedback(agent_id, task_id, score, summary):
+    """
+    记录子 agent 评审反馈到 feedback.jsonl。
+    score: 0-100 整数，"excellent"/"pass"/"fail" 等字符串也会接受。
+    格式与 SKILL.md §多角色派发标准 声明一致：
+    {"ts":"ISO8601","agent_id":"p7-xxx","task_id":"xxx","score":0-100,"summary":"一句话"}
+    """
+    os.makedirs(os.path.dirname(FEEDBACK_FILE), exist_ok=True)
+    # 尝试将 score 转为 int，失败则保留原字符串
+    try:
+        score_val = int(score)
+    except ValueError:
+        score_val = score
+    entry = {
+        "ts": datetime.now(tz).isoformat(),
+        "agent_id": agent_id,
+        "task_id": task_id,
+        "score": score_val,
+        "summary": summary,
+    }
+    with open(FEEDBACK_FILE, "a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    return {"feedback": True, "agent_id": agent_id, "score": score_val}
+
+
 def main():
     if len(sys.argv) < 2:
         print(json.dumps({"error": "用法: python harness-engine.py <load|contract|scan-risk|verify|gate|report> [args...]"}, ensure_ascii=False))
@@ -501,8 +610,20 @@ def main():
             print(json.dumps({"error": "用法: python harness-engine.py report <contract_path>"}, ensure_ascii=False))
             sys.exit(1)
         result = cmd_report(sys.argv[2])
+    elif command == "status":
+        result = cmd_status()
+    elif command == "cleanup":
+        if len(sys.argv) < 4:
+            print(json.dumps({"error": "用法: python harness-engine.py cleanup <agent_id> <reason>"}, ensure_ascii=False))
+            sys.exit(1)
+        result = cmd_cleanup(sys.argv[2], sys.argv[3])
+    elif command == "feedback":
+        if len(sys.argv) < 6:
+            print(json.dumps({"error": "用法: python harness-engine.py feedback <agent_id> <task_id> <score> <summary>"}, ensure_ascii=False))
+            sys.exit(1)
+        result = cmd_feedback(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
     else:
-        print(json.dumps({"error": f"未知命令: {command}。可用: load / contract / scan-risk / verify / gate / report"}, ensure_ascii=False))
+        print(json.dumps({"error": f"未知命令: {command}。可用: load / contract / scan-risk / verify / gate / report / status / cleanup / feedback"}, ensure_ascii=False))
         sys.exit(1)
 
     print(json.dumps(result, ensure_ascii=False, indent=2))
