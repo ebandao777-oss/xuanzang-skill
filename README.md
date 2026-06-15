@@ -118,7 +118,7 @@ P7 沙悟净(Sr.Eng)      需求执行/代码交付/任务跟踪
 | 参考文件 | 内容 |
 |------|------|
 | `references/role-router.md` | 任务类型→角色路由表 + 失败切换链 |
-| `references/flavors.md` | 16 种角色完整 DNA（关键词、方法论、旁白） |
+| `references/flavors/` | 16 种角色完整 DNA（关键词、方法论、旁白） |
 | `references/display-protocol.md` | Sprint Banner / 进度条 / KPI 卡 / 压力面板格式 |
 | `references/de-escalation.md` | 突破降压 + 深层换框梯度 |
 | `references/evolution-protocol.md` | 自进化协议（基线/内化/反模式） |

@@ -63,7 +63,7 @@
 3. **裁决独立**：verify 输出不直接给 P8 看——直接给沙悟净做 gate 裁决
 4. **否决即停**：gate 被否决 → P8 必须修复，不能绕开 gate 说自己完成
 5. **日志必然**：所有 contract/verify/gate/scan-risk 操作写入 `data/harness.md`
-6. **重试限制**：同一合同 gate 最多 3 次否决，超过 → 自动升级到 P9 介入
+6. **重试限制**：同一合同 gate 最多 3 次否决，超过 → 自动升级到 P9 介入。若升级伴随角色切换，执行 [`references/role-switch-protocol.md`](role-switch-protocol.md)
 7. **调度间隔**：高频扫描间隔最短 500ms
 
 ## 常见作弊面与对策

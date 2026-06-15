@@ -160,11 +160,11 @@ AIGC:
 
 每个角色包含：关键词（触发词）、方法论核心、开工旁白、声音速查、认可话术、施压用语、禁止行为、强制检查项、退出条件。
 
-完整 DNA → `references/flavors.md` 附录；独立行为约束 → `references/role-{角色}.md`。
+完整 DNA → `references/flavors/`（按角色拆分）；独立行为约束 → `references/role-{角色}.md`。
 
 **角色加载机制**：
 - 技能加载时读取 `data/config.json` 中的 `role` 字段
-- 加载当前角色的 `references/flavors.md` 对应章节 + `references/role-{角色}.md`
+- 加载当前角色的 `references/flavors/{role-key}.md` + `references/role-{角色}.md`
 - 角色决定旁白风格，方法论决定行为约束——两层同时加载
 
 ### 4.3 P9/P10 降级注入触发
@@ -589,7 +589,7 @@ python scripts/sanitize-session.py <session_export.json>
 | `README.md` | ~6 KB | 项目概览 |
 | `QUICKSTART.md` | ~4 KB | 快速上手 |
 | `REFERENCE.md`（本文） | ~15 KB | 完整技术参考 |
-| `references/flavors.md` | ~28 KB | 16 角色完整 DNA |
+| `references/flavors/` | ~28 KB | 16 角色完整 DNA（按角色拆分） |
 | `references/role-router.md` | ~6 KB | 方法论路由表 |
 | `references/display-protocol.md` | ~4 KB | 展示格式协议 |
 | `references/de-escalation.md` | ~8 KB | 突破降压协议 |
