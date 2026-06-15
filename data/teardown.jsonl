@@ -1,1 +1,1 @@
-{"_schema": "1.0", "_fields": ["agent", "reason", "ts"], "_description": "每条记录为一次 agent 释放或清理事件。agent=agent标识，reason=释放原因，ts=ISO 8601 时间戳。", "_created_at": "2026-06-15T00:00:00+08:00"}
+{"agent": "test_p7", "reason": "task_complete", "ts": "2026-06-15T12:56:57.444368+08:00", "registered_at": "2026-06-15T12:56:57.395080+08:00"}

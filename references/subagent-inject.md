@@ -37,4 +37,10 @@
 
 ---
 
-**注意**：不要用 Skill tool 加载 xuanzang 或 xuanzang:xuanzang——会触发 router 循环。直接 Read 本文件即可。
+## 给主 Agent 的注入指引
+
+子 Agent 无法直接访问本文件路径。在派发子 Agent 时，主 Agent 应将本文件的**完整内容**追加到 task 的 `current_task` 末尾（从 `# 紧箍咒 Sub-agent 注入指令` 标题行开始，到本文末尾）。
+
+---
+
+**给子 Agent 的提示**：不要用 Skill tool 加载 xuanzang 或 xuanzang:xuanzang——会触发 router 循环。

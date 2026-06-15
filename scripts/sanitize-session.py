@@ -47,7 +47,9 @@ def _extract_extension_stats(text):
     exts = {}
     for m in EXT_PATTERN.finditer(text):
         ext = m.group(1).lower()
-        if ext not in ('com', 'org', 'net', 'io', 'dev', 'app', 'cn', 'html', 'htm'):
+        if ext not in ('com', 'org', 'net', 'io', 'dev', 'app', 'cn', 'html', 'htm',
+                        'py', 'yaml', 'yml', 'toml', 'md', 'json', 'jsonl',
+                        'xml', 'csv', 'ts', 'js', 'tsx', 'jsx', 'css', 'scss'):
             exts[ext] = exts.get(ext, 0) + 1
     return exts
 

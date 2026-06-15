@@ -117,7 +117,7 @@
 ### failure-detector.py (检测引擎)
 - 已实现：错误签名收集、模式分类（SPINNING/EXPLORING/MIXED）、突破检测、降压信号输出
 - 调用方式：`python scripts/failure-detector.py report <tool> <exit_code> [error]`
-- 状态文件：`data/.error_history.jsonl`、`data/.peak_pressure_level`
+- 状态文件：`data/error_history.jsonl`、`data/peak_pressure_level`
 - ⚠ P8 自动化调度循环中**强制手动调用**（硬性要求，非可选）
 - **降级分支**：若 `failure-detector.py` 脚本不可用（缺失、执行失败），P8 在内存中手动维护失败计数（`failure_count`），压力升级逻辑（L0→L4）不变，仅丢失自动突破检测和模式分类（SPINNING/EXPLORING/MIXED）。此时角色切换链由 P8 根据失败模式的语义信号（原地打转/放弃推锅/质量差 等）手动查表触发
 

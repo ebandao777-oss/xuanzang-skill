@@ -101,7 +101,17 @@ def _write_meta(meta):
     with open(EVOLUTION_FILE, "r", encoding="utf-8") as f:
         content = f.read()
     new_json = "```json\n" + json.dumps(meta, ensure_ascii=False, indent=2) + "\n```"
-    content = re.sub(r"```json\n.*?\n```", new_json, content, flags=re.DOTALL)
+    # 精确定位：仅替换「## 内部追踪数据」之后的第一个 ```json 代码块
+    # 避免误匹配正文中的其他 JSON 示例片段
+    marker = "## 内部追踪数据"
+    marker_idx = content.find(marker)
+    if marker_idx != -1:
+        # 找到标记后的第一个 ```json 代码块
+        json_start = content.find("```json", marker_idx)
+        if json_start != -1:
+            json_end = content.find("```", json_start + 7)
+            if json_end != -1:
+                content = content[:json_start] + new_json + content[json_end + 3:]
     with open(EVOLUTION_FILE, "w", encoding="utf-8") as f:
         f.write(content)
 
@@ -116,6 +126,23 @@ def _update_stats_section(stats):
     new_block = "## 性能统计\n" + "\n".join(
         f"- {k}: {v}" for k, v in stats.items()
     )
+    content = content.replace(old_block.group(0), new_block)
+    with open(EVOLUTION_FILE, "w", encoding="utf-8") as f:
+        f.write(content)
+
+
+def _update_baseline_section(behaviors):
+    """用最新会话的行为列表重写「当前基线」段落。"""
+    with open(EVOLUTION_FILE, "r", encoding="utf-8") as f:
+        content = f.read()
+    old_block = re.search(r"## 当前基线（上次会话最佳实践）\n.*?(?=\n## |\n$)", content, re.DOTALL)
+    if not old_block:
+        return
+    if behaviors:
+        lines = "\n".join(f"- {b}" for b in behaviors)
+        new_block = f"## 当前基线（上次会话最佳实践）\n{lines}"
+    else:
+        new_block = "## 当前基线（上次会话最佳实践）\n（首次启动，暂无基线。本次会话的表现将成为基线。）"
     content = content.replace(old_block.group(0), new_block)
     with open(EVOLUTION_FILE, "w", encoding="utf-8") as f:
         f.write(content)
@@ -164,12 +191,13 @@ def cmd_load():
             break
 
     stats = {
-        "最近会话 [紧箍咒生效] 次数": "0（本轮尚未开始统计）",
+        "最近会话 [紧箍咒生效] 次数": sessions[-1]["count"] if sessions else 0,
         "历史最高": history_max,
         "最近 5 次平均": avg_recent,
         "连续达标会话": streak,
     }
     _update_stats_section(stats)
+    _update_baseline_section(baseline)
 
     easter_egg = _check_easter_egg()
 
@@ -240,7 +268,7 @@ def cmd_complete():
         "categories": categories,
     })
     meta["sessions"] = sessions[-20:]  # 保留最近20次
-    del meta["current_session_events"]
+    meta.pop("current_session_events", None)
 
     # 判断基线比对（内容匹配，非数量比对）
     prev_baseline_count = len(baseline)
@@ -305,6 +333,9 @@ def cmd_complete():
     internalized = [b for b, count in bc.items() if count >= 3]
     easter_egg = _check_easter_egg()
 
+    # 防膨胀：只保留最近 30 个 session 块
+    _prune_sessions(keep=30)
+
     return {
         "comparison": result,
         "promotions": promotions,
@@ -313,6 +344,17 @@ def cmd_complete():
         "categories": categories,
         "easter_egg": easter_egg,
     }
+
+
+def _prune_sessions(keep=30):
+    """裁剪内部追踪数据的 sessions 数组只保留最近 N 条。"""
+    meta = _read_meta()
+    sessions = meta.get("sessions", [])
+    if len(sessions) <= keep:
+        return {"pruned": 0, "remaining": len(sessions)}
+    meta["sessions"] = sessions[-keep:]
+    _write_meta(meta)
+    return {"pruned": len(sessions) - keep, "remaining": keep}
 
 
 def cmd_add_memory(key, value):
@@ -372,6 +414,9 @@ if __name__ == "__main__":
             print(json.dumps(cmd_add_memory(sys.argv[2], sys.argv[3]), ensure_ascii=False))
         elif cmd == "add-antipattern" and len(sys.argv) >= 4:
             print(json.dumps(cmd_add_antipattern(sys.argv[2], sys.argv[3]), ensure_ascii=False))
+        elif cmd == "prune":
+            keep = int(sys.argv[2]) if len(sys.argv) > 2 else 30
+            print(json.dumps(_prune_sessions(keep), ensure_ascii=False))
         else:
             print(json.dumps({"error": f"未知命令或参数不足: {cmd}"}, ensure_ascii=False))
     except Exception as e:
