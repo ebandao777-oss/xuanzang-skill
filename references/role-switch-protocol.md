@@ -36,7 +36,7 @@
 
 ### Step 4: 加载新角色方法论文件
 
-- 架构角色 P7 → 读取 `references/role-{role-key}.md`（西游角色方法论）或 `references/role-juanlian-pro.md`（沙悟净专用）
+- 架构角色 P7（沙悟净）→ 读取 `references/role-shawujing-pro.md`（沙悟净专用）
 - 架构角色 P9 → 读取 `references/role-guanyin-pro.md`
 - 架构角色 P10 → 读取 `references/role-xuanzang-pro.md`
 - 如果角色切换由方法论路由自动触发且新角色的 role-*.md 已在当前上下文加载，可跳过此步骤

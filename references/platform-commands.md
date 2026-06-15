@@ -78,7 +78,7 @@
 
 **`/pua:p9`**：加载 Tech Lead 管理模式。注入 P9 行为约束（Task Prompt 六要素、验收闭环、不自己写代码）。同步读取 `references/role-guanyin-pro.md`。
 
-**`/pua:p7`**：加载 Sr. Engineer 模式。注入 P7 行为约束（方案驱动三步法、审查三问）。同步读取 `references/role-juanlian-pro.md`。
+**`/pua:p7`**：加载 Sr. Engineer 模式。注入 P7 行为约束（方案驱动三步法、审查三问）。同步读取 `references/role-shawujing-pro.md`。
 
 ### 7. `/pua:on` — 打开默认加载
 

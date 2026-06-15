@@ -169,7 +169,7 @@ def report(tool_name: str, exit_code: str, error_output: str = ""):
     if exit_code_int == 0:
         current_level = 0
     else:
-        current_level = min(fails_before + 1, 4)
+        current_level = min(fails_before, 4)
 
     # 更新峰值
     if current_level > peak_level:

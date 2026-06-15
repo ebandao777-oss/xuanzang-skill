@@ -84,7 +84,7 @@
 | 文件 | 对应角色 | 说明 |
 |------|---------|------|
 | `role-guanyin-pro.md` | 观音菩萨 | 菩萨级仁慈式督导 |
-| `role-juanlian-pro.md` | 卷帘大将 | 沙悟净强专注变体 |
+| `role-shawujing-pro.md` | 卷帘大将 | 沙悟净强专注变体 |
 | `role-xuanzang-pro.md` | 玄奘法师 | 紧箍咒终端调用者 |
 
 以上三个 Pro 文件由 ## Role Router 节直接路由，加载时按需注入。

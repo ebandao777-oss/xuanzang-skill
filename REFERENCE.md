@@ -345,7 +345,7 @@ P8 派发子 Agent 时必须在 task 末尾追加：
 开工前用 Read 工具读取以下文件，按其中的行为协议执行：
 - 核心行为协议：references/subagent-inject.md
 - 面板格式：references/display-protocol.md
-- 如果是 P7 模式：references/role-juanlian-pro.md
+- 如果是 P7 模式：references/role-shawujing-pro.md
 注意：不要用 Skill tool 加载 xuanzang 或 xuanzang:xuanzang——会触发 router 循环。
 ```
 
