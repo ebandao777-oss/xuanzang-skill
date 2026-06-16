@@ -18,6 +18,7 @@
 | `/pua:team-status` | 列活跃 Agent / TTL | ⚙ 系统 |
 | `/pua:reap-orphans` | 扫 stale agent 并回收 | ⚙ 系统 |
 | `/pua:teardown-all` | 级联释放全部 P10→P9→P8→P7 | ⚙ 系统 |
+| `/pua:reload` | 重新加载当前角色配置（flavor + 方法论 + 旁白） | ⚙ 系统 |
 
 ## 指令执行模板
 
@@ -99,6 +100,12 @@
 **`/pua:reap-orphans`**：扫 active-agents.json，age > 30min 的 stale agent 批量回收。
 
 **`/pua:teardown-all`**：级联释放 P10→P9→P8→P7，写入 teardown.jsonl。
+
+### 13. `/pua:reload` — 重新加载角色配置
+
+**触发**：用户输入后 → 重新读取 `data/config.json` → 加载对应角色的 flavor 文件 + 方法论文件 + 旁白模板，刷新当前会话的角色配置。
+
+**用途**：角色切换后未立即生效时手动刷新；或 compact 后恢复 xuanzang 技能加载。
 
 ## 节日彩蛋表
 

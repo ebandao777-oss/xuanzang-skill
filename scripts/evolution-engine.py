@@ -299,6 +299,10 @@ def cmd_complete():
         elif event_count < prev_baseline_count:
             result = {"action": "degraded", "old": prev_baseline_count, "new": event_count,
                       "event_type": "DEGRADATION"}
+        else:
+            # 集合不相交且数量相等 → 行为模式完全变更，记为 diverged
+            result = {"action": "diverged", "old": prev_baseline_count, "new": event_count,
+                      "event_type": "DIVERGED", "note": "行为集完全不重叠"}
 
     # 行为晋升检测
     promotions = []

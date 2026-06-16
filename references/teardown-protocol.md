@@ -59,8 +59,8 @@
 | 场景                                | 自治行为                                                    | 实际落地                                                                                             |
 | ----------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | 技能加载时                          | 初始化 / 加载进化基线                                       | ✅ `python scripts/evolution-engine.py init`（首次）或 `load`                                        |
-| 技能加载时                          | 扫 stale active agent，提示确认回收                         | ✅ `python scripts/harness-engine.py status`（非 evolution-engine status）                           |
-| 每次工具调用后                      | 自检 active-agents 并清点 stale                             | ✅ `python scripts/harness-engine.py status`                                                         |
+| 技能加载时                          | 扫 stale active agent，提示确认回收                         | ✅ `python scripts/harness-engine.py status`（仅报告 stale，调用方显式回收） |
+| 每次工具调用后                      | 自检 active-agents 并清点 stale                             | ✅ `python scripts/harness-engine.py status`（仅报告，有 stale 时 P8 决定是否执行 reap-orphans） |
 | `[紧箍咒生效 🔥]` 标记时            | 追踪主动行为并写入分类                                      | ✅ `python scripts/evolution-engine.py track <behavior> <category>`                                  |
 | 方法论沉淀时                        | 记录项目级记忆 / 反模式                                     | ✅ `python scripts/evolution-engine.py add-memory <key> <value>` / `add-antipattern <trap> <lesson>` |
 | 主要任务完成时                      | 基线比对与进化统计刷新                                      | ✅ `python scripts/evolution-engine.py complete`                                                     |

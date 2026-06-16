@@ -520,6 +520,7 @@ evolution-engine.py 在 `peak_level >= 4` 时返回 `level=1` 而非保持 level
 
 | 版本 | 关键变更 | 升级注意 |
 |------|---------|---------|
+| 1.0.6 | P0-01 DIVERGED 兜底、P0-02 cmd_status 仅报告、E201 持久化、/pua:reload 指令、SPINNING 判据统一、版本号/文件计数同步 | 升级后旧版 data/ 文件会被自动裁剪 |
 | 1.0.5 | data/ 自动裁剪、L4 死锁归零、级联 teardown | 升级后旧 data/ 文件会被自动裁剪 |
 | 1.0.4 | 基础方法轮调度 | — |
 | 1.0.3 | 四代治理拓扑 | — |
@@ -579,22 +580,22 @@ python scripts/sanitize-session.py <session_export.json>
 
 | 文件 | 大小 | 用途 |
 |------|------|------|
-| `SKILL.md` | ~43 KB | 运行时入口，核心行为协议 |
-| `README.md` | ~6 KB | 项目概览 |
+| `SKILL.md` | ~33 KB | 运行时入口，核心行为协议 |
+| `README.md` | ~7 KB | 项目概览 |
 | `QUICKSTART.md` | ~4 KB | 快速上手 |
-| `REFERENCE.md`（本文） | ~15 KB | 完整技术参考 |
+| `REFERENCE.md`（本文） | ~22 KB | 完整技术参考 |
 | `references/flavors/` | ~28 KB | 17 个文件（16 角色 DNA + `_appendix.md` 跨角色速查表） |
-| `references/role-router.md` | ~6 KB | 方法论路由表 |
-| `references/display-protocol.md` | ~4 KB | 展示格式协议 |
-| `references/de-escalation.md` | ~8 KB | 突破降压协议 |
-| `references/evolution-protocol.md` | ~8 KB | 自进化协议 |
-| `references/harness-governance.md` | ~5 KB | 四权分离治理 |
+| `references/role-router.md` | ~7 KB | 方法论路由表 |
+| `references/display-protocol.md` | ~3 KB | 展示格式协议 |
+| `references/de-escalation.md` | ~10 KB | 突破降压协议 |
+| `references/evolution-protocol.md` | ~7 KB | 自进化协议 |
+| `references/harness-governance.md` | ~6 KB | 四权分离治理 |
 | `references/lifecycle-protocol.md` | ~4 KB | Agent 生命周期 |
 | `references/platform-commands.md` | ~6 KB | 斜杠命令模板 |
 | `references/agent-team.md` | ~5 KB | 四层协作规则 |
 | `references/ding-reminders.md` | ~6 KB | 仙班提醒库 |
-| `references/role-*.md`（29 个） | 2-18 KB | 各角色独立行为约束 |
-| `references/faq.md` | ~4 KB | 常见问题与反模式汇总 |
+| `references/role-*.md`（18 个） | 2-18 KB | 各角色独立行为约束 |
+| `references/faq.md` | ~5 KB | 常见问题与反模式汇总 |
 | `scripts/failure-detector.py` | ~12 KB | 失败检测引擎 |
 | `scripts/evolution-engine.py` | ~16 KB | 自进化引擎 |
 | `scripts/harness-engine.py` | ~28 KB | 治理引擎 |

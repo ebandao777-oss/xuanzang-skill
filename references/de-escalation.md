@@ -127,12 +127,14 @@
 
 | 信号 | 判据 | 等效模式 | 自动动作 |
 |------|------|---------|---------|
-| 最近 3 次错误信息 **完全相同**（含工具名+错误关键词） | 字符串精确匹配 | `SPINNING` | 自动标记 [E101]，禁止重试同一方法 |
-| 最近 3 次错误**各不相同**但都在减少 | 错误签名无重叠 | `EXPLORING` | 保持方向，输出 `方向收敛中` |
-| 最近 3 次错误中 **2 次相同 + 1 次不同** | 部分重叠 | `MIXED` | 检查是否在两方案间振荡，选较新的方向 |
+| 最近 3 次 `error_keyword` **完全相同** | 与 `failure-detector.py` 的 `classify_pattern()` 等价 | `SPINNING` | 自动标记 [E101]，禁止重试同一方法 |
+| 最近 3 次 `error_keyword` **各不相同**但都在减少 | 无重叠 | `EXPLORING` | 保持方向，输出 `方向收敛中` |
+| 最近 3 次 `error_keyword` 中 **2 次相同 + 1 次不同** | 部分重叠 | `MIXED` | 检查是否在两方案间振荡，选较新的方向 |
 | 成功前连续失败 ≥3 次且当前工具调用 exit_code=0 | 手动 `failure_count ≥ 3` | 突破 | 触发 `[紧箍咒 突破 ✨]`，按 Part 1 降压表执行 |
 
-**实施方式**：P8 每轮工具调用后在内存中维护 `error_log`（最近 5 条），格式 `(tool_name, exit_code, error_keyword)`。每次追加后运行启发式判据。突破检测在成功时执行——不依赖脚本，纯内存判断。旁白标注 `[E201] 已降级手动计数，启发式模式检测生效`。
+**实施方式**：P8 每轮工具调用后在内存中维护 `error_log`（最近 5 条），格式 `(tool_name, exit_code, error_keyword)`，其中 `error_keyword` 提取逻辑与 `failure-detector.py` 的 `classify_pattern()` 一致：取 traceback/错误输出的最后一行非空文本，截断至 64 字符并去除行号/时间戳等动态噪音。每次追加后运行启发式判据。突破检测在成功时执行——不依赖脚本，纯内存判断。旁白标注 `[E201] 已降级手动计数，启发式模式检测生效`。
+
+**E201 状态持久化**：为避免上下文 compact 导致 `failure_count` 归零，每次 `failure_count` 变动时同步写入 `data/e201_manual_state.json`（格式 `{"failure_count": N, "error_log": [...], "last_updated": "ISO8601"}`）。P8 加载技能时若 `failure-detector.py` 不可用，先读取此文件恢复计数状态。compact 后重新加载 xuanzang 技能时自动恢复。突破检测成功或手动 `/pua:cancel-pua-loop` 后清除该文件。
 
 ### SKILL.md (Prompt Layer)
 - P8 自动化调度循环加载本文件后，根据 detector JSON 的 `level` 字段查表注入对应层级的换框原文

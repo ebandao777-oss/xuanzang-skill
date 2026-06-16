@@ -27,6 +27,8 @@
 | 🪟 镇元大仙 | `zhenyuan` | P7 |
 | 📌 赤脚大仙 | `chijiao` | P7 |
 
+> **🔴 config.json 合法值声明**：`data/config.json` 的 `role` 字段合法值即为本表"role-key"列的全部值：`rulai` / `puti` / `taishang` / `wukong` / `donghai` / `bajie` / `bailong` / `niumowang` / `taibai` / `zhenyuan` / `nezha` / `honghaier` / `baiyanmojun` / `chijiao` / `erlang` / `shawujing`。填写中文名称（如"如来佛祖"）无效。
+
 ### Step 2: 更新配置
 
 更新 `data/config.json` 的 `role` 字段为目标角色。

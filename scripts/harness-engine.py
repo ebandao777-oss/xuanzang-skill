@@ -553,10 +553,12 @@ def cmd_status():
             stale.append(entry)
         else:
             active.append(entry)
+    # 仅报告 stale agent，不自动清理。调用方需显式执行 cleanup 或 reap-orphans 回收。
     return {
         "active_agents": active,
         "stale_agents": stale,
-        "total": len(agents),
+        "total": len(active) + len(stale),
+        "stale_count": len(stale),
         "ttl_minutes": ttl_minutes,
     }
 
