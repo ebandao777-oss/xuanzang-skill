@@ -27,7 +27,7 @@
 | 6   | Cleanup | 每次 teardown 后 `harness-engine.py cleanup <id>`，移除活跃记录 + 写入 teardown.jsonl |
 | 7   | Orphan  | TTL=30min 自动巡检；`/pua:reap-orphans` 手动扫描回收；禁递归派发                      |
 
-> 完整规则（R1-R6 的 WHY/HOW、命令格式、JSON 日志 schema）→ [`references/lifecycle-protocol.md`](references/lifecycle-protocol.md)
+> 完整规则（R1-R6 的 WHY/HOW、命令格式、JSON 日志 schema）→ [`lifecycle-protocol.md`](lifecycle-protocol.md)
 
 ---
 
