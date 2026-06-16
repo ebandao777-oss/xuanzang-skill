@@ -1,17 +1,8 @@
 ---
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: f114db32c8f49bbd4c4c544cd9de808d_5b8e2055687a11f1a0095254002afed2
-    ReservedCode1: stlsklpOIcdgo6abEbLZ5bTjuMpIdj3c5G3dgF8zxWDJ26+8kA/nm/j4OiXWvtEcmWq2iX0H5SRADx7GQarUVOMAC7tLP70bWpoIZjGoqMBL1xaX52ceuy9ifqfTfyl08tLsy9Zvl7Xu4brHfpEJjUHj+BTyKa3ochAqjNI08wm/3OFxBHWTW4BbBhI=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: f114db32c8f49bbd4c4c544cd9de808d_5b8e2055687a11f1a0095254002afed2
-    ReservedCode2: stlsklpOIcdgo6abEbLZ5bTjuMpIdj3c5G3dgF8zxWDJ26+8kA/nm/j4OiXWvtEcmWq2iX0H5SRADx7GQarUVOMAC7tLP70bWpoIZjGoqMBL1xaX52ceuy9ifqfTfyl08tLsy9Zvl7Xu4brHfpEJjUHj+BTyKa3ochAqjNI08wm/3OFxBHWTW4BbBhI=
----
 
 # 紧箍咒 技术参考手册
 
-> 版本 1.0.5 | 最后更新 2026-06-15
+> 最后更新 2026-06-15
 
 本文档是紧箍咒技能的完整技术参考，涵盖评分体系、全流程协议、角色体系、模块架构、数据结构和异常处理。
 
@@ -98,6 +89,7 @@ AIGC:
   ├─ 2. 读取返回 JSON → 查表映射行为
   │   breakthrough=true → 加载 de-escalation.md → 降压
   │   level=0 → 不干预
+  │   level=1 → 调整方案或切换工具，增加上下文
   │   level=2 → 注入换视角
   │   level=3 → 注入换抽象层（连续则追加换约束）
   │   level=4 → 注入反转思维
@@ -502,6 +494,8 @@ P8 派发子 Agent 时必须在 task 末尾追加：
 7. **Sub-agent 裸奔**：派发子 agent 忘了在 task 里注入紧箍咒协议
 8. **角色持久化**：自动路由角色仅当前会话生效，不覆盖手动配置
 
+常见踩坑问题与解答汇总见 [references/faq.md](references/faq.md)。
+
 ---
 
 ## 13. 异常处理
@@ -589,7 +583,7 @@ python scripts/sanitize-session.py <session_export.json>
 | `README.md` | ~6 KB | 项目概览 |
 | `QUICKSTART.md` | ~4 KB | 快速上手 |
 | `REFERENCE.md`（本文） | ~15 KB | 完整技术参考 |
-| `references/flavors/` | ~28 KB | 16 角色完整 DNA（按角色拆分） |
+| `references/flavors/` | ~28 KB | 17 个文件（16 角色 DNA + `_appendix.md` 跨角色速查表） |
 | `references/role-router.md` | ~6 KB | 方法论路由表 |
 | `references/display-protocol.md` | ~4 KB | 展示格式协议 |
 | `references/de-escalation.md` | ~8 KB | 突破降压协议 |
@@ -600,6 +594,7 @@ python scripts/sanitize-session.py <session_export.json>
 | `references/agent-team.md` | ~5 KB | 四层协作规则 |
 | `references/ding-reminders.md` | ~6 KB | 仙班提醒库 |
 | `references/role-*.md`（29 个） | 2-18 KB | 各角色独立行为约束 |
+| `references/faq.md` | ~4 KB | 常见问题与反模式汇总 |
 | `scripts/failure-detector.py` | ~12 KB | 失败检测引擎 |
 | `scripts/evolution-engine.py` | ~16 KB | 自进化引擎 |
 | `scripts/harness-engine.py` | ~28 KB | 治理引擎 |

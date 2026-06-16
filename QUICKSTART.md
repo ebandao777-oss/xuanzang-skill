@@ -1,13 +1,4 @@
 ---
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: f114db32c8f49bbd4c4c544cd9de808d_5aa7d2a0687a11f1a99c5254007bceed
-    ReservedCode1: oMYnADiJ0XO0ytvXNS/al57sAMjyuFbl1HBJzyKuJ5TPZ0NoLDnHpJdNAN2bLVCb+rTEXzYSgnn0h8RBU3ykEX5DmuONSxMLfh+vdDB2wgWE1fNVmo5DToeHegCFZZYOzCCyWnImRDguaw2ShrRB2YR4E1cQb4FkYyfqzYU13rsL1TJCKx/1+zErjD8=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: f114db32c8f49bbd4c4c544cd9de808d_5aa7d2a0687a11f1a99c5254007bceed
-    ReservedCode2: oMYnADiJ0XO0ytvXNS/al57sAMjyuFbl1HBJzyKuJ5TPZ0NoLDnHpJdNAN2bLVCb+rTEXzYSgnn0h8RBU3ykEX5DmuONSxMLfh+vdDB2wgWE1fNVmo5DToeHegCFZZYOzCCyWnImRDguaw2ShrRB2YR4E1cQb4FkYyfqzYU13rsL1TJCKx/1+zErjD8=
----
 
 # 紧箍咒 5 分钟上手指南
 
@@ -154,4 +145,4 @@ A：自动路由的角色仅当前会话生效。手动 `/pua:flavor` 设置的�
 
 **Q：能多个角色同时用吗？**
 A：P8 在一个时刻只能有一个活跃角色。但 P8 可以创建 P7 子 Agent 并行工作，各自走各自的方法论。
-*（内容由AI生成，仅供参考）*
+

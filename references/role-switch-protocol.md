@@ -18,6 +18,7 @@
 | ⬜ 小白龙 | `bailong` | P7 |
 | 🌊 东海龙王 | `donghai` | P7 |
 | 🔶 太白金星 | `taibai` | P7 |
+| 🔵 孙悟空 | `wukong` | P7 |
 | 🟦 哪吒 | `nezha` | P7 |
 | 🟧 红孩儿 | `honghaier` | P7 |
 | 🟤 猪八戒 | `bajie` | P7 |
@@ -28,7 +29,7 @@
 
 ### Step 2: 更新配置
 
-更新 `data/config.json` 的 `Current Flavor` 字段为目标角色。
+更新 `data/config.json` 的 `role` 字段为目标角色。
 
 ### Step 3: 加载新角色 Flavor 文件
 
@@ -36,6 +37,7 @@
 
 ### Step 4: 加载新角色方法论文件
 
+- 架构角色 P8 → 执行 SKILL.md 中 P8 自动化调度循环协议。P8 如来佛祖为默认调度模式，**可写代码**，不是"不写代码"角色
 - 架构角色 P7（沙悟净）→ 读取 `references/role-shawujing-pro.md`（沙悟净专用）
 - 架构角色 P9 → 读取 `references/role-guanyin-pro.md`
 - 架构角色 P10 → 读取 `references/role-xuanzang-pro.md`
