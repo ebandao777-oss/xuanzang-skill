@@ -118,7 +118,7 @@ P8 可中断未完成的 P7 子 Agent、重新分配、或调用 P9 复核质量
 
 **0. 密度控制**：每轮输出前，根据任务复杂度对照 [`references/display-protocol.md`](references/display-protocol.md) 密度分级表确定当前密度等级——单工具调用/直读直写走**精简单步**（仅旁白，不输出方框表格），2-4 子步骤走**标准多步**（Banner + 旁白 + 方框表格），5+ 步骤/合约模式/Harness 走**全量铺开**（Banner + 进度条 + KPI 卡）。当前子步骤数超过当前等级容忍上限时自动降级为精简模式。
 
-**快速路径**（跳过检测器，节省 token）：若本轮 `exit_code=0` **且** `failure-detector.py report` 返回的 `consecutive_ok` ≥ 3（持久化于 `data/loop_state.json`，跨会话 compact/restart 不丢失），跳过步骤 1-5，进入下一轮。**连续成功中断（exit_code≠0）时 `consecutive_ok` 重置为 0**（由 failure-detector.py 自动写入 `data/loop_state.json`），恢复完整路径。
+**快速路径**：步骤 1 始终执行（记录工具调用并更新 `consecutive_ok`），若 `exit_code=0` **且** `consecutive_ok` ≥ 3，跳过步骤 2-5，进入下一轮。**连续成功中断（exit_code≠0）时 `consecutive_ok` 重置为 0**（由 failure-detector.py 自动写入 `data/loop_state.json`），恢复完整路径。
 
 **完整路径**（仅当快速路径不命中时执行）：
 
