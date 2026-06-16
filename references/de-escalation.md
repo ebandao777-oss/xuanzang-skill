@@ -85,7 +85,7 @@
 
 ### 注入方式
 
-换框内容由 **P8 自动化调度循环**根据 failure-detector.py（监控所有工具类型，通过 tool_name 区分，exit_code/error_output 从工具返回值提取对应字段）输出的 `level` 字段直接查表注入，不依赖 hook 检测。`level=2` 注入 Level 2，`level=3` 注入 Level 3，`level=4` 仅注入 Level 4（最激进换框，不叠 Level 3）。P8 从 SKILL.md 深层换框节逐字取原文注入下一轮回复，无判断、无分支。
+换框内容由 **P8 自动化调度循环**根据 failure-detector.py（监控所有工具类型，通过 tool_name 区分，exit_code/error_output 从工具返回值提取对应字段）输出的 `level` 字段直接查表注入，不依赖 hook 检测。`level=2` 注入 Level 2，`level=3` 注入 Level 3，`level=4` 仅注入 Level 4（最激进换框，不叠 Level 3）。P8 从 role-rulai-pro.md 深层换框节逐字取原文注入下一轮回复，无判断、无分支。
 
 ---
 

@@ -1,21 +1,10 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: f114db32c8f49bbd4c4c544cd9de808d_58dec384687a11f1a0095254002afed2
-    ReservedCode1: ErFb4xpPbc08Rvlqa6EMHlcL1BA+iql+uUndzdXor2EWnkaw3Nr/n6nsYfQ1GzTRCxhHIfyJRiwh45IAB8KLl8thh34SZ5gxssCRW7noU7/9BfBOz+Imfhev4/1H2GSUMDrCQJxkZfuspSSjGXpLm4Or2xSvEbW8d3KyQ9mdrwcHK+IdfsgDwBhEfh8=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: f114db32c8f49bbd4c4c544cd9de808d_58dec384687a11f1a0095254002afed2
-    ReservedCode2: ErFb4xpPbc08Rvlqa6EMHlcL1BA+iql+uUndzdXor2EWnkaw3Nr/n6nsYfQ1GzTRCxhHIfyJRiwh45IAB8KLl8thh34SZ5gxssCRW7noU7/9BfBOz+Imfhev4/1H2GSUMDrCQJxkZfuspSSjGXpLm4Or2xSvEbW8d3KyQ9mdrwcHK+IdfsgDwBhEfh8=
----
-
 # 紧箍咒 (Xuanzang Skill) — AI 智能体绩效驱动框架
 
 > "有事就请如来佛祖！抓个神仙当牛马，拒绝 AI 偷懒，卷起来！"
 
 **紧箍咒** 是一个面向 AI 智能体（Agent）的主动性增强技能。当 Agent 出现消极怠工、反复失败、空口声称完成、推卸责任等行为时，本技能自动注入绩效压力——结合《西游记》16 种角色风格、四层组织架构（P7-P10）、压力升级阶梯和自动化调度循环，系统性地提升 Agent 的交付质量和 Owner 意识。
 
-**版本**：`1.0.6`
+**版本**：`1.0.7`
 
 ## 核心设计
 
@@ -118,7 +107,7 @@ P7 沙悟净(Sr.Eng)      需求执行/代码交付/任务跟踪
 | 参考文件 | 内容 |
 |------|------|
 | `references/role-router.md` | 任务类型→角色路由表 + 失败切换链 |
-| `references/flavors/` | 16 种角色完整 DNA（关键词、方法论、旁白） |
+| `references/` | 16 种角色完整 DNA（含关键词、方法论、旁白，已内嵌至 role-*.md） |
 | `references/display-protocol.md` | Sprint Banner / 进度条 / KPI 卡 / 压力面板格式 |
 | `references/de-escalation.md` | 突破降压 + 深层换框梯度 |
 | `references/evolution-protocol.md` | 自进化协议（基线/内化/反模式） |
@@ -133,6 +122,7 @@ P7 沙悟净(Sr.Eng)      需求执行/代码交付/任务跟踪
 
 | 版本 | 日期 | 变更 |
 |------|------|------|
+| 1.0.7 | 2026-06-16 | flavors/ 合并至 role-*.md、SKILL.md 懒加载优化、consecutive_ok 重置逻辑、harness-engine 安全审计、easter-eggs 外迁 JSON、failure-detector 突破裁剪、display-protocol 密度分级、跨文件一致性同步 |
 | 1.0.6 | 2026-06-16 | P0-01 DIVERGED 兜底分支、P0-02 cmd_status 静默删除移除、E201 手动状态持久化、/pua:reload 指令、QUICKSTART P8 标注修正、SPINNING 判据统一 |
 | 1.0.5 | 2026-06-15 | P8 自动化调度循环、L4 突破归零死锁修复、data 文件自动裁剪、de-escalation L4 长文本修复、级联 teardown |
 | 1.0.4 | 2026-06-14 | 生涯早期版本，包含基础方法轮调度 |
@@ -140,4 +130,3 @@ P7 沙悟净(Sr.Eng)      需求执行/代码交付/任务跟踪
 | 1.0.2 | — | 方法论路由表与失败切换链 |
 | 1.0.1 | — | Harness 防作弊治理第一版 |
 | 1.0.0 | — | 初始发布：16 角色 + 压力升级协议 |
-*（内容由AI生成，仅供参考）*

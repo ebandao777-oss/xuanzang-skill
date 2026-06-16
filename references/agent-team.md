@@ -26,7 +26,7 @@ P7 (Senior Engineer)   → 方案驱动，在 P8 指导下执行子任务
 |------|---------|---------|---------|
 | **P10 CTO** | 用户说"用 P10 模式" | 定义战略方向，P9 间仲裁 | `role-xuanzang-pro.md` |
 | **P9 Tech Lead** | 用户说"用 P9 模式" | 编写 Task Prompt，管理 P8 团队 | `role-guanyin-pro.md` |
-| **P8 独当一面** | 默认角色 / P9 派发 | 执行任务 + 可派发 P7 子任务 | SKILL.md |
+| **P8 独当一面** | 默认角色 / P9 派发 | 执行任务 + 可派发 P7 子任务 | `role-rulai-pro.md` |
 | **P7 Senior Engineer** | P8 派发 P7 模式 sub-agent | 方案先行，审查三问 | `role-shawujing-pro.md` |
 
 ## P8 失败汇报格式（L2+ 时发送给 P9）

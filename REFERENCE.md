@@ -2,7 +2,7 @@
 
 # 紧箍咒 技术参考手册
 
-> 最后更新 2026-06-15
+> 最后更新 2026-06-16
 
 本文档是紧箍咒技能的完整技术参考，涵盖评分体系、全流程协议、角色体系、模块架构、数据结构和异常处理。
 
@@ -89,7 +89,7 @@
   ├─ 2. 读取返回 JSON → 查表映射行为
   │   breakthrough=true → 加载 de-escalation.md → 降压
   │   level=0 → 不干预
-  │   level=1 → 调整方案或切换工具，增加上下文
+  │   level=1 → 不切换角色：仅换方案不换方法论
   │   level=2 → 注入换视角
   │   level=3 → 注入换抽象层（连续则追加换约束）
   │   level=4 → 注入反转思维
@@ -152,12 +152,12 @@
 
 每个角色包含：关键词（触发词）、方法论核心、开工旁白、声音速查、认可话术、施压用语、禁止行为、强制检查项、退出条件。
 
-完整 DNA → `references/flavors/`（按角色拆分）；独立行为约束 → `references/role-{角色}.md`。
+完整 DNA + 旁白库已内嵌至 `role-*.md`；独立行为约束 → `references/role-{角色}-pro.md`。
 
 **角色加载机制**：
 - 技能加载时读取 `data/config.json` 中的 `role` 字段
-- 加载当前角色的 `references/flavors/{role-key}.md` + `references/role-{角色}.md`
-- 角色决定旁白风格，方法论决定行为约束——两层同时加载
+- 加载当前角色的 `role-*.md`（已内嵌旁白库 + 行为约束，无需单独加载 flavors）
+- 角色决定旁白风格，方法论决定行为约束——统一于 role-*.md
 
 ### 4.3 P9/P10 降级注入触发
 
@@ -520,6 +520,7 @@ evolution-engine.py 在 `peak_level >= 4` 时返回 `level=1` 而非保持 level
 
 | 版本 | 关键变更 | 升级注意 |
 |------|---------|---------|
+| 1.0.7 | flavors/ 合并至 role-*.md、SKILL.md 懒加载优化、consecutive_ok 重置、harness-engine 安全审计、easter-eggs 外迁、failure-detector 突破裁剪、display-protocol 密度分级、flavors/ 僵尸引用全量清理 | 升级后 flavors/ 目录已清空，role-*.md 为唯一角色入口 |
 | 1.0.6 | P0-01 DIVERGED 兜底、P0-02 cmd_status 仅报告、E201 持久化、/pua:reload 指令、SPINNING 判据统一、版本号/文件计数同步 | 升级后旧版 data/ 文件会被自动裁剪 |
 | 1.0.5 | data/ 自动裁剪、L4 死锁归零、级联 teardown | 升级后旧 data/ 文件会被自动裁剪 |
 | 1.0.4 | 基础方法轮调度 | — |
@@ -584,7 +585,7 @@ python scripts/sanitize-session.py <session_export.json>
 | `README.md` | ~7 KB | 项目概览 |
 | `QUICKSTART.md` | ~4 KB | 快速上手 |
 | `REFERENCE.md`（本文） | ~22 KB | 完整技术参考 |
-| `references/flavors/` | ~28 KB | 17 个文件（16 角色 DNA + `_appendix.md` 跨角色速查表） |
+| `references/` | ~28 KB | 16 个角色文件（role-*.md，内嵌 flavors DNA + `_appendix.md` 跨角色速查表） |
 | `references/role-router.md` | ~7 KB | 方法论路由表 |
 | `references/display-protocol.md` | ~3 KB | 展示格式协议 |
 | `references/de-escalation.md` | ~10 KB | 突破降压协议 |
@@ -600,4 +601,3 @@ python scripts/sanitize-session.py <session_export.json>
 | `scripts/evolution-engine.py` | ~16 KB | 自进化引擎 |
 | `scripts/harness-engine.py` | ~28 KB | 治理引擎 |
 | `scripts/sanitize-session.py` | ~7 KB | 会话脱敏工具 |
-*（内容由AI生成，仅供参考）*

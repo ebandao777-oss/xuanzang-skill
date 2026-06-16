@@ -80,5 +80,3 @@
 - ✅ `harness-engine.py gate` 存在并实现 gate 子命令
 - ✅ `/pua:team-status`、`/pua:reap-orphans`、`/pua:teardown-all` 已在 `references/platform-commands.md` 中定义
 - ✅ `data/teardown.jsonl` 可写且有 schema
-
-_（内容由AI生成，仅供参考）_

@@ -33,7 +33,7 @@
 
 ### Q: 角色切换了但 Agent 语气没变？
 
-角色切换后，新角色的旁白内容从 `references/flavors/{role-key}.md` 和 `references/role-{角色}.md` 加载。如果 Agent 没有重新加载技能，新角色不会生效。用 `/pua:reload` 或直接重新触发 `/pua` 即可。
+角色切换后，新角色的旁白内容从对应 `role-*.md`（已内嵌旁白库）加载。如果 Agent 没有重新加载技能，新角色不会生效。用 `/pua:reload` 或直接重新触发 `/pua` 即可。
 
 ### Q: 压力等级太高了，Agent 一直在"毕业警告"？
 
@@ -75,5 +75,3 @@ python scripts/harness-engine.py status
 # 查看自进化基线
 python scripts/evolution-engine.py status
 ```
-
-_（内容由AI生成，仅供参考）_

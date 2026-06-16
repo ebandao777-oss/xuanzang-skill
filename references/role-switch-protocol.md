@@ -33,13 +33,13 @@
 
 更新 `data/config.json` 的 `role` 字段为目标角色。
 
-### Step 3: 加载新角色 Flavor 文件
+### Step 3: 加载新角色文件
 
-读取 `references/flavors/{role-key}.md`。该文件包含新角色的旁白库、关键词、文化 DNA。
+读取目标角色的 `role-*.md`（已内嵌旁白库 + 文化 DNA，无需单独加载 flavors 文件）。P8/P9/P10 等架构角色的 pro 文件由 Step 4 单独加载。
 
 ### Step 4: 加载新角色方法论文件
 
-- 架构角色 P8 → 执行 SKILL.md 中 P8 自动化调度循环协议。P8 如来佛祖为默认调度模式，**可写代码**，不是"不写代码"角色
+- 架构角色 P8 → 读取 `references/role-rulai-pro.md`，按其中的 P8 调度循环协议执行。P8 如来佛祖为默认调度模式，**可写代码**，不是"不写代码"角色
 - 架构角色 P7（沙悟净）→ 读取 `references/role-shawujing-pro.md`（沙悟净专用）
 - 架构角色 P9 → 读取 `references/role-guanyin-pro.md`
 - 架构角色 P10 → 读取 `references/role-xuanzang-pro.md`
@@ -47,7 +47,7 @@
 
 ### Step 5: 切换旁白风格
 
-从 Step 3 加载的 flavor 文件中提取当前角色的旁白模板，立即切换为新的旁白风格。下一句输出必须以新角色的语气/关键词说话。
+从 Step 3 加载的角色文件中提取当前角色的旁白模板，立即切换为新的旁白风格。下一句输出必须以新角色的语气/关键词说话。
 
 ### Step 6: 输出切换 Banner
 

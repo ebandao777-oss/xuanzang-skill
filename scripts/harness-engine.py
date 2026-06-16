@@ -303,6 +303,30 @@ def cmd_scan_risk(contract_path):
     return result
 
 
+# ─── verify_commands 安全白名单 ───────────────────────────
+# 仅允许安全的 shell 元字符。拒绝包含以下危险模式的命令：
+_FORBIDDEN_SHELL_PATTERNS = [
+    re.compile(r'[;&|]{2,}'),         # 命令链分隔符连续出现
+    re.compile(r'`[^`]*`'),           # 反引号命令替换
+    re.compile(r'\$\([^)]*\)'),       # $(command) 替换
+    re.compile(r'\$\{[^}]*\}'),       # ${var} 动态变量（排除无害的字面量）
+    re.compile(r'[<>]'),              # 重定向（读取/覆写文件）
+    re.compile(r'rm\s+-rf'),          # 递归删除
+    re.compile(r'chmod\s+777'),       # 权限全开
+    re.compile(r'wget|curl.*\|\s*(sh|bash)'),  # 远程脚本即执行
+    re.compile(r'(?i)nc\s+-[el]'),    # netcat 反向 shell
+]
+
+
+def _audit_verify_command(cmd: str) -> dict:
+    """审计 verify_commands 中的单条命令，返回 {safe: bool, reason: str}。"""
+    for pat in _FORBIDDEN_SHELL_PATTERNS:
+        m = pat.search(cmd)
+        if m:
+            return {"safe": False, "reason": f"匹配危险模式 '{m.group()}' 于规则 {pat.pattern}"}
+    return {"safe": True, "reason": "通过"}
+
+
 def cmd_verify(contract_path):
     """运行验收命令，写入 verifier_status。"""
     if not os.path.exists(contract_path):
@@ -315,11 +339,28 @@ def cmd_verify(contract_path):
     if not commands:
         return {"error": "合约中没有定义 verify_commands"}
 
+    # 安全审计：逐条检查 verify_commands 是否包含危险模式
+    audit_results = []
+    for cmd in commands:
+        audit = _audit_verify_command(cmd)
+        audit_results.append({"command": cmd, **audit})
+        if not audit["safe"]:
+            return {
+                "error": "verify_commands 包含不安全命令，已拒绝执行",
+                "blocked_command": cmd,
+                "reason": audit["reason"],
+                "all_audits": audit_results,
+            }
+
     results = []
     all_passed = True
 
     for cmd in commands:
         try:
+            # shell=True 必要性：verify_commands 是用户定义的任意 shell 命令，可能含管道/重定向/环境变量。
+            # 当前攻击面闭合：verify_commands 由合约 JSON 存储，JSON 写入受文件系统权限保护。
+            # 未来扩展关注：若 verify_commands 来源扩至外部输入（如 Web API/用户上传），必须切换为
+            #   subprocess.run(["cmd", "/c"] + shlex.split(cmd), shell=False) 并做输入清洗。
             proc = subprocess.run(
                 cmd, shell=True, capture_output=True, text=True,
                 timeout=120, cwd=os.path.dirname(contract_path) or os.getcwd()

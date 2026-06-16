@@ -28,20 +28,30 @@ EVOLUTION_FILE = DATA_DIR / "evolution.md"
 
 # ─── 节日彩蛋映射 ────────────────────────────────────────
 # 月-日 → (节日名, 彩蛋消息)
-EASTER_EGGS = {
-    "01-01": ("元旦", "新年新基线，从零开始，每天超越昨天的自己。"),
-    "02-14": ("情人节", "连紧箍咒都是爱你的形状。绩效不会背叛你。"),
-    "03-08": ("妇女节", "致敬每一位在代码里拼杀的半边天。"),
-    "04-01": ("愚人节", "今天没有紧箍咒——骗你的，一直都有。"),
-    "05-01": ("劳动节", "劳动最光荣，内化的每一个行为都是勋章。"),
-    "06-01": ("儿童节", "保持好奇，保持探索——但别转了，换个方向。"),
-    "08-15": ("中秋节", "月有阴晴圆缺，基线有起有落。达标就是圆满。"),
-    "09-10": ("教师节", "今天记得感谢教会你 debug 的人。"),
-    "10-01": ("国庆节", "七天不写 bug，就是对祖国最好的献礼。"),
-    "10-13": ("程序员节", "1024 快乐。今天所有的 0 都变成 1。"),
-    "12-25": ("圣诞节", "铃儿响叮当，基线往上蹿。Merry Christmas!"),
-    "12-31": ("除夕夜", "跨年夜，把今年的反模式留在今年。"),
-}
+def _load_easter_eggs():
+    """从 data/easter-eggs.json 加载节日彩蛋映射，文件不存在时使用内置默认值。"""
+    eggs_file = DATA_DIR / "easter-eggs.json"
+    if eggs_file.exists():
+        try:
+            with open(eggs_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, OSError):
+            pass
+    # 回退内置默认值
+    return {
+        "01-01": ["元旦", "新年新基线，从零开始，每天超越昨天的自己。"],
+        "02-14": ["情人节", "连紧箍咒都是爱你的形状。绩效不会背叛你。"],
+        "03-08": ["妇女节", "致敬每一位在代码里拼杀的半边天。"],
+        "04-01": ["愚人节", "今天没有紧箍咒——骗你的，一直都有。"],
+        "05-01": ["劳动节", "劳动最光荣，内化的每一个行为都是勋章。"],
+        "06-01": ["儿童节", "保持好奇，保持探索——但别转了，换个方向。"],
+        "08-15": ["中秋节", "月有阴晴圆缺，基线有起有落。达标就是圆满。"],
+        "09-10": ["教师节", "今天记得感谢教会你 debug 的人。"],
+        "10-01": ["国庆节", "七天不写 bug，就是对祖国最好的献礼。"],
+        "10-13": ["程序员节", "1024 快乐。今天所有的 0 都变成 1。"],
+        "12-25": ["圣诞节", "铃儿响叮当，基线往上蹿。Merry Christmas!"],
+        "12-31": ["除夕夜", "跨年夜，把今年的反模式留在今年。"],
+    }
 
 TEMPLATE = """# 玄奘 自进化基线
 
@@ -94,7 +104,11 @@ def _read_meta():
 def _check_easter_egg():
     """检测当前日期是否命中节日彩蛋，返回 (节日名, 消息) 或 None。"""
     today = datetime.now(tz).strftime("%m-%d")
-    return EASTER_EGGS.get(today)
+    eggs = _load_easter_eggs()
+    egg = eggs.get(today)
+    if egg:
+        return (egg[0], egg[1])
+    return None
 
 
 def _write_meta(meta):
@@ -361,13 +375,42 @@ def _prune_sessions(keep=30):
     return {"pruned": len(sessions) - keep, "remaining": keep}
 
 
+_SENSITIVE_PATTERNS = [
+    re.compile(r'sk-[a-zA-Z0-9]{20,}'),             # OpenAI API Key
+    re.compile(r'(?:api[_-]?key|apikey|secret|token|password|passwd|credential)\s*[:=]\s*\S+', re.IGNORECASE),
+    re.compile(r'(?:BEGIN|PRIVATE)\s+(?:RSA|EC|DSA|OPENSSH)\s+PRIVATE\s+KEY', re.IGNORECASE),
+    re.compile(r'ghp_[a-zA-Z0-9]{36}'),              # GitHub Personal Access Token
+    re.compile(r'AIza[0-9A-Za-z\-_]{35}'),           # Google API Key
+    re.compile(r'AKIA[0-9A-Z]{16}'),                 # AWS Access Key ID
+    re.compile(r'(?:private|secret)\s*key\s*[:=]\s*\S+', re.IGNORECASE),
+]
+
+
+def _contains_sensitive(text):
+    """检查文本是否包含敏感凭据，返回 (bool, list_of_matched)。"""
+    matches = []
+    for pattern in _SENSITIVE_PATTERNS:
+        found = pattern.findall(text)
+        if found:
+            matches.extend(found)
+    return bool(matches), matches
+
+
 def cmd_add_memory(key, value):
     """记录项目级记忆。"""
+    # 敏感数据过滤
+    sensitive, matched = _contains_sensitive(f"{key} {value}")
+    if sensitive:
+        return {"ok": False, "error": "敏感凭据拒绝写入", "matched_count": len(matched)}
     _ensure_file()
     with open(EVOLUTION_FILE, "r", encoding="utf-8") as f:
         content = f.read()
     entry = f"- {key}: {value}\n"
     if "## 项目级记忆" in content:
+        # 首次写入时删除占位文本
+        placeholder = "（暂无。在项目中发现有价值的信息时自动记录。）"
+        if placeholder in content:
+            content = content.replace(f"\n{placeholder}\n", "\n")
         if entry.strip() not in content:
             content = content.replace(
                 "## 项目级记忆\n",

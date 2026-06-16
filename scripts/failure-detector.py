@@ -31,6 +31,7 @@ SKILL_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = SKILL_ROOT / "data"
 HISTORY_FILE = DATA_DIR / "error_history.jsonl"
 PEAK_FILE = DATA_DIR / "peak_pressure_level"
+LOOP_STATE_FILE = DATA_DIR / "loop_state.json"
 
 # ── 错误模式签名 ──────────────────────────────────────────
 # SPINNING：同类错误反复出现（工具名相同 / 错误关键字相同）
@@ -102,6 +103,34 @@ def compute_consecutive_fails(history: list) -> int:
     return count
 
 
+def read_consecutive_ok() -> int:
+    """从 loop_state.json 读取持久化的连续成功计数。"""
+    if not LOOP_STATE_FILE.exists():
+        return 0
+    try:
+        state = json.loads(LOOP_STATE_FILE.read_text(encoding="utf-8"))
+        return state.get("consecutive_ok", 0)
+    except (json.JSONDecodeError, FileNotFoundError):
+        return 0
+
+
+def write_consecutive_ok(value: int):
+    """写入连续成功计数到 loop_state.json。"""
+    ensure_dir()
+    state = {}
+    if LOOP_STATE_FILE.exists():
+        try:
+            state = json.loads(LOOP_STATE_FILE.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            pass
+    state["consecutive_ok"] = value
+    state["last_updated"] = datetime.now(timezone.utc).isoformat()
+    LOOP_STATE_FILE.write_text(
+        json.dumps(state, ensure_ascii=False, indent=2),
+        encoding="utf-8"
+    )
+
+
 def report(tool_name: str, exit_code: str, error_output: str = ""):
     """记录一次工具执行结果，返回检测结果"""
     ensure_dir()
@@ -140,7 +169,7 @@ def report(tool_name: str, exit_code: str, error_output: str = ""):
             "error_snippet": error_output[:200] if error_output else "",
             "pattern": "SPINNING",
             "consecutive_fails_before": 0,
-            "current_level": 0 if exit_code_int == 0 else 1,
+            "current_level": 0,  # 首次失败→L0，与 SKILL.md 压力表对齐（第2次失败才升级至 L1）
             "peak_level": peak_level,
         }
         with open(HISTORY_FILE, "a", encoding="utf-8") as f:
@@ -152,6 +181,7 @@ def report(tool_name: str, exit_code: str, error_output: str = ""):
             "peak_level": peak_level,
             "pattern": record["pattern"],
             "consecutive_fails_before": 0,
+            "consecutive_ok": consecutive_ok,
             "total_entries": 1,
         }
         print(json.dumps(result, ensure_ascii=False))
@@ -175,6 +205,15 @@ def report(tool_name: str, exit_code: str, error_output: str = ""):
     if current_level > peak_level:
         peak_level = current_level
         PEAK_FILE.write_text(str(peak_level), encoding="utf-8")
+
+    # ── consecutive_ok 持久化 ──
+    # 持久化到 loop_state.json，跨越会话 compact/restart 不丢失。
+    # SKILL.md 和 role-rulai-pro.md 的 P8 调度循环快速路径依赖此值。
+    if exit_code_int == 0:
+        consecutive_ok = read_consecutive_ok() + 1
+    else:
+        consecutive_ok = 0
+    write_consecutive_ok(consecutive_ok)
 
     # 构建记录
     record = {
@@ -211,6 +250,7 @@ def report(tool_name: str, exit_code: str, error_output: str = ""):
         "peak_level": peak_level,
         "pattern": pattern,
         "consecutive_fails_before": fails_before,
+        "consecutive_ok": consecutive_ok,
         "total_entries": len(history) + 1,
     }
     print(json.dumps(result, ensure_ascii=False))
@@ -236,6 +276,8 @@ def report(tool_name: str, exit_code: str, error_output: str = ""):
             )
             with open(evolution_file, "a", encoding="utf-8") as f:
                 f.write(entry)
+            # 突破记录裁剪：只保留最近 10 条
+            _prune_breakthroughs(evolution_file, keep=10)
         except (OSError, IOError):
             print("[紧箍咒] 突破记录写入失败（磁盘满/权限不足），沉降未持久化。",
                   file=sys.stderr)
@@ -283,6 +325,8 @@ def reset_state():
         HISTORY_FILE.unlink()
     if PEAK_FILE.exists():
         PEAK_FILE.unlink()
+    if LOOP_STATE_FILE.exists():
+        LOOP_STATE_FILE.unlink()
     print(json.dumps({"reset": True, "message": "状态已清除"}))
     print("[紧箍咒] 状态重置。从 L0 重新开始。", file=sys.stderr)
 
@@ -299,6 +343,44 @@ def prune_history(keep=50):
     with open(HISTORY_FILE, "w", encoding="utf-8") as f:
         f.writelines(lines[-keep:])
     return {"pruned": total - keep, "remaining": keep, "keep": keep}
+
+
+def _prune_breakthroughs(evolution_file, keep=10):
+    """裁剪 evolution.md 中的突破记录，只保留最近 N 条。"""
+    if not evolution_file.exists():
+        return
+    with open(evolution_file, "r", encoding="utf-8") as f:
+        content = f.read()
+    # 按 "---" 分割突破记录块（每个突破块以 "## 突破 " 开头，以 "---" 结尾）
+    blocks = []
+    current = []
+    in_breakthrough = False
+    for line in content.split("\n"):
+        if line.startswith("## 突破 "):
+            in_breakthrough = True
+            if current:
+                blocks.append("\n".join(current))
+            current = [line]
+        elif in_breakthrough:
+            current.append(line)
+            if line.strip() == "---":
+                blocks.append("\n".join(current))
+                current = []
+                in_breakthrough = False
+    if current:
+        blocks.append("\n".join(current))
+    if len(blocks) <= keep:
+        return
+    # 保留最近 keep 条
+    kept_blocks = blocks[-keep:]
+    # 重建文件：找到第一个 "## 突破 " 之前的内容 + 保留的突破块
+    first_bt = content.find("\n## 突破 ")
+    if first_bt == -1:
+        return
+    prefix = content[:first_bt]
+    new_content = prefix + "\n" + "\n".join(kept_blocks)
+    with open(evolution_file, "w", encoding="utf-8") as f:
+        f.write(new_content)
 
 
 # ── CLI 入口 ──────────────────────────────────────────────
