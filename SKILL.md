@@ -1,5 +1,7 @@
 ---
 name: xuanzang-skill
+version: "1.0.0"
+author: "智慧半岛"
 description: "玄奘.skill 当用户明确请求紧箍咒模式，或表现出沮丧、反复失败（2次及以上）、消极被动、抱怨质量、未核实即声称完成、想要放弃，或要求更努力/换种方法时触发。常见触发词：'try harder'、'figure it out'、'stop giving up'、'you keep failing'、'加油'、'别偷懒'、'你再试试'、'为什么还不行'、'你怎么又失败了'、'又错了'、'检查下'、'完善'、'审核'、'质量太差'、'换个方法'、'stop spinning'、'you broke it'、'/pua'、'紧箍咒模式'。对于正常的首次编程或信息查询请求，请勿触发。"
 ---
 
